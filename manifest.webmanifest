@@ -1,0 +1,11 @@
+{
+  "name": "MoveUp",
+  "short_name": "MoveUp",
+  "description": "Treino guiado de 14 exercícios para manter o corpo em movimento.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f9fd",
+  "theme_color": "#07163f",
+  "orientation": "portrait-primary"
+}
