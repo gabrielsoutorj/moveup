@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#4f5e46" />
+  <title>MoveUp — Treino</title>
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff}
+    iframe{display:block;width:100%;height:100dvh;border:0;background:#fff}
+  </style>
+</head>
+<body>
+  <iframe id="workoutFrame" src="workout.html" title="Treino MoveUp" allow="screen-wake-lock"></iframe>
+  <script>
+    const frame=document.getElementById('workoutFrame');
+    frame.addEventListener('load',()=>{
+      try{
+        const doc=frame.contentDocument;
+        if(!doc || doc.getElementById('moveupGreenTheme')) return;
+        const link=doc.createElement('link');
+        link.id='moveupGreenTheme';
+        link.rel='stylesheet';
+        link.href='moveup-theme.css';
+        doc.head.appendChild(link);
+        const meta=doc.querySelector('meta[name="theme-color"]');
+        if(meta) meta.setAttribute('content','#4f5e46');
+      }catch(e){ console.error('MoveUp theme injection failed',e); }
+    });
+  </script>
+</body>
+</html>
