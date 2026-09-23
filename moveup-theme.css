@@ -27,6 +27,7 @@ html,body{background:#fff!important;color:var(--ink)}
   justify-content:center !important;
   padding:16px !important;
   overflow:hidden !important;
+  transform:translateY(-8px) !important;
 }
 
 .visual-wrap img,
@@ -39,4 +40,65 @@ html,body{background:#fff!important;color:var(--ink)}
   object-fit:contain !important;
   object-position:center center !important;
   margin:0 auto !important;
+}
+
+/* --- Short movement instruction below the image --- */
+.moveup-instruction{
+  width:min(92vw,600px) !important;
+  margin:-2px auto 8px !important;
+  padding:0 12px !important;
+  text-align:center !important;
+  min-height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.moveup-instruction .desc{
+  display:block !important;
+  max-width:600px !important;
+  margin:0 auto !important;
+  color:#eef3ea !important;
+  font-size:13px !important;
+  line-height:1.4 !important;
+  text-align:center !important;
+}
+
+/* --- Footer controls: previous / pause / restart / next --- */
+.controls{
+  gap:6px !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.controls .control{
+  min-width:0 !important;
+}
+.controls #pauseBtn,
+.controls #restartBtn{
+  flex:1 1 0 !important;
+  max-width:180px !important;
+  padding:11px 8px !important;
+}
+.moveup-nav{
+  flex:0 0 44px !important;
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  padding:0 !important;
+  border-radius:14px !important;
+  font-size:24px !important;
+  line-height:1 !important;
+  display:grid !important;
+  place-items:center !important;
+}
+.moveup-nav:disabled{
+  opacity:.34 !important;
+  cursor:not-allowed !important;
+}
+
+@media(max-width:640px){
+  .visual-wrap{transform:translateY(-7px) !important}
+  .moveup-instruction{margin:-3px auto 6px !important;padding:0 8px !important;min-height:32px !important}
+  .moveup-instruction .desc{font-size:12px !important;line-height:1.35 !important}
+  .controls #pauseBtn,.controls #restartBtn{font-size:13px !important;padding:11px 5px !important}
+  .moveup-nav{flex-basis:42px !important;width:42px !important;height:42px !important;min-width:42px !important}
 }
