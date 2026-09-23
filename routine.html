@@ -13,19 +13,92 @@
 <body>
   <iframe id="workoutFrame" src="workout.html" title="Treino MoveUp" allow="screen-wake-lock"></iframe>
   <script>
+    const PROFILE_KEY='moveup_profile_v1';
+    const EXERCISE_IMAGE_NAMES={
+      'Lymphatic Hops':'LymphaticHops',
+      'Body Waves':'BodyWaves',
+      'Trunk Twist':'TrunkTwist',
+      'Arm Swings':'ArmSwings',
+      'Jumping Jacks':'JumpingJacks',
+      'Dead Arms':'DeadArms',
+      'Golf Swing':'GolfSwing',
+      'Marches':'Marches',
+      'Ballet Squats':'BalletSquats',
+      'Horseback Stance':'HorsebackStance',
+      'Sit-Up':'SitUp',
+      'Abdominal Plank':'Plank',
+      'Push Ups':'PushUps',
+      'Pull-Up / Chin-Up':'PullUp'
+    };
+
+    function getSavedProfile(){
+      try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')}catch(_){return {}}
+    }
+
+    function getAvatarExerciseImage(exerciseName){
+      const profile=getSavedProfile();
+      const stem=EXERCISE_IMAGE_NAMES[String(exerciseName||'').trim()];
+      if(!stem || !profile.sex || !profile.avatar) return '';
+      return `avatar/${stem}_${profile.sex}_${profile.avatar}.jpg`;
+    }
+
+    function applyAvatarImages(doc){
+      const profile=getSavedProfile();
+      if(!profile.sex || !profile.avatar) return;
+
+      doc.querySelectorAll('.card').forEach(card=>{
+        const title=card.querySelector('.card-title')?.textContent?.trim();
+        const img=card.querySelector('img');
+        const src=getAvatarExerciseImage(title);
+        if(img && src && img.getAttribute('src')!==src){
+          img.src=src;
+          img.alt=`${title} — avatar selecionado`;
+        }
+      });
+
+      const nameEl=doc.getElementById('exerciseName');
+      const imageEl=doc.getElementById('exerciseImage');
+      const currentName=nameEl?.textContent?.trim();
+      const currentSrc=getAvatarExerciseImage(currentName);
+      if(imageEl && currentSrc && imageEl.getAttribute('src')!==currentSrc){
+        imageEl.src=currentSrc;
+        imageEl.alt=`${currentName} — avatar selecionado`;
+      }
+    }
+
     const frame=document.getElementById('workoutFrame');
     frame.addEventListener('load',()=>{
       try{
         const doc=frame.contentDocument;
-        if(!doc || doc.getElementById('moveupGreenTheme')) return;
-        const link=doc.createElement('link');
-        link.id='moveupGreenTheme';
-        link.rel='stylesheet';
-        link.href='moveup-theme.css';
-        doc.head.appendChild(link);
+        if(!doc) return;
+
+        if(!doc.getElementById('moveupGreenTheme')){
+          const link=doc.createElement('link');
+          link.id='moveupGreenTheme';
+          link.rel='stylesheet';
+          link.href='moveup-theme.css';
+          doc.head.appendChild(link);
+        }
+
         const meta=doc.querySelector('meta[name="theme-color"]');
         if(meta) meta.setAttribute('content','#4f5e46');
-      }catch(e){ console.error('MoveUp theme injection failed',e); }
+
+        applyAvatarImages(doc);
+        setTimeout(()=>applyAvatarImages(doc),0);
+        setTimeout(()=>applyAvatarImages(doc),250);
+
+        const nameEl=doc.getElementById('exerciseName');
+        if(nameEl){
+          new MutationObserver(()=>applyAvatarImages(doc)).observe(nameEl,{childList:true,subtree:true,characterData:true});
+        }
+
+        const grid=doc.getElementById('exerciseGrid');
+        if(grid){
+          new MutationObserver(()=>applyAvatarImages(doc)).observe(grid,{childList:true,subtree:true});
+        }
+      }catch(e){
+        console.error('MoveUp integration failed',e);
+      }
     });
   </script>
 </body>
