@@ -4,11 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
-  <title>MoveUp — Monte seu perfil</title>
+  <title>MoveUp</title>
   <style>
-    :root{--ink:#151515;--muted:#6b6b6b;--line:#e7e7e7;--soft:#f7f7f5;--accent:#65745a;--accent-dark:#4f5e46;--shadow:0 12px 34px rgba(0,0,0,.07)}
+    :root{--ink:#151515;--muted:#6b6b6b;--line:#e7e7e7;--soft:#f7f7f5;--accent:#65745a;--accent-dark:#4f5e46;--accent-soft:#eef2eb;--shadow:0 12px 34px rgba(0,0,0,.07)}
     *{box-sizing:border-box}
     body{margin:0;background:#fff;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100svh}
+    button,input{font:inherit}
     .page{width:min(860px,100%);margin:0 auto;padding:38px 20px 52px}
     .brand{text-align:center;margin-bottom:28px}
     .brand h1{margin:0;font-size:clamp(40px,8vw,64px);letter-spacing:-.05em;line-height:.95}
@@ -16,14 +17,38 @@
     .card{border:1px solid var(--line);border-radius:24px;padding:24px;background:#fff;box-shadow:var(--shadow)}
     h2{font-size:23px;margin:0 0 5px;letter-spacing:-.025em}
     .lead{margin:0 0 22px;color:var(--muted);font-size:14px}
+    .hidden{display:none!important}
+
+    /* Home com perfil salvo */
+    .profile-home{display:none}
+    .profile-home.show{display:block}
+    .welcome{display:grid;grid-template-columns:132px 1fr;gap:22px;align-items:center}
+    .welcome-avatar{width:132px;height:164px;border-radius:22px;overflow:hidden;background:var(--soft);border:1px solid var(--line)}
+    .welcome-avatar img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+    .hello{font-size:13px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:5px}
+    .welcome h2{font-size:clamp(30px,6vw,42px);line-height:1;margin:0 0 8px;letter-spacing:-.04em}
+    .profile-sub{color:var(--muted);font-size:14px;margin:0}
+    .profile-data{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+    .data-box{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:14px 15px}
+    .data-box strong{display:block;font-size:18px;letter-spacing:-.02em}
+    .data-box span{display:block;color:var(--muted);font-size:11px;margin-top:3px;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
+    .home-actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:22px}
+    .primary{height:54px;border:0;border-radius:15px;background:var(--accent);color:#fff;font-weight:850;cursor:pointer;transition:.18s ease;padding:0 22px}
+    .primary:hover{background:var(--accent-dark);transform:translateY(-1px)}
+    .secondary{height:54px;border:1px solid #d5d8d2;border-radius:15px;background:#fff;color:var(--accent-dark);font-weight:800;cursor:pointer;padding:0 19px}
+    .secondary:hover{background:var(--accent-soft)}
+    .saved-note{text-align:center;color:#999;font-size:11px;margin:12px 8px 0;line-height:1.4}
+
+    /* Cadastro / edição */
+    .form-view{display:block}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
     label{display:block;font-size:13px;font-weight:700;margin:0 0 7px}
-    input{width:100%;height:50px;border:1px solid #d9d9d9;border-radius:13px;padding:0 14px;font:inherit;font-size:16px;outline:none;background:#fff}
+    input{width:100%;height:50px;border:1px solid #d9d9d9;border-radius:13px;padding:0 14px;font-size:16px;outline:none;background:#fff}
     input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(101,116,90,.12)}
     .unit{position:relative}.unit input{padding-right:48px}.unit span{position:absolute;right:14px;bottom:15px;color:#888;font-size:13px;pointer-events:none}
     .full{grid-column:1/-1}
     .sex-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .choice{height:50px;border:1px solid #d9d9d9;border-radius:13px;background:#fff;font:inherit;font-weight:700;cursor:pointer;transition:.18s ease}
+    .choice{height:50px;border:1px solid #d9d9d9;border-radius:13px;background:#fff;font-weight:700;cursor:pointer;transition:.18s ease}
     .choice:hover{border-color:#b7b7b7}.choice.selected{border:2px solid var(--accent);background:#f4f6f2;color:var(--accent-dark)}
     .avatar-area{display:none;margin-top:25px;padding-top:24px;border-top:1px solid var(--line)}
     .avatar-area.show{display:block}
@@ -37,13 +62,18 @@
     .avatar .name{text-align:center;font-size:12px;font-weight:750;padding:8px 2px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .check{display:none;position:absolute;top:13px;right:13px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;align-items:center;justify-content:center;font-size:15px;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.15)}
     .avatar.selected .check{display:flex}
-    .actions{margin-top:24px}
-    #start{width:100%;height:54px;border:0;border-radius:15px;background:var(--accent);color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:.18s ease}
+    .actions{margin-top:24px;display:grid;grid-template-columns:1fr;gap:10px}
+    #start{width:100%;height:54px;border:0;border-radius:15px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;cursor:pointer;transition:.18s ease}
     #start:hover:not(:disabled){background:var(--accent-dark);transform:translateY(-1px)}
     #start:disabled{background:#dededb;color:#9d9d98;cursor:not-allowed}
+    #cancelEdit{display:none;width:100%;height:50px;border:1px solid #d5d8d2;border-radius:15px;background:#fff;color:var(--accent-dark);font-weight:800;cursor:pointer}
+    #cancelEdit.show{display:block}
     .privacy{text-align:center;color:#999;font-size:11px;margin:11px 8px 0;line-height:1.4}
-    .resume{display:none;margin-top:12px;text-align:center}.resume button{border:0;background:transparent;color:var(--accent-dark);font:inherit;font-size:13px;font-weight:750;cursor:pointer;text-decoration:underline}
-    @media(max-width:640px){.page{padding:26px 15px 36px}.card{padding:19px;border-radius:21px}.grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}.brand{margin-bottom:21px}.brand p{font-size:14px}}
+
+    @media(max-width:640px){
+      .page{padding:26px 15px 36px}.card{padding:19px;border-radius:21px}.grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}.brand{margin-bottom:21px}.brand p{font-size:14px}
+      .welcome{grid-template-columns:96px 1fr;gap:15px}.welcome-avatar{width:96px;height:120px;border-radius:18px}.welcome h2{font-size:30px}.profile-data{grid-template-columns:repeat(3,1fr);gap:7px}.data-box{padding:11px 9px;text-align:center}.data-box strong{font-size:16px}.data-box span{font-size:9px}.home-actions{grid-template-columns:1fr}.secondary{width:100%}
+    }
   </style>
 </head>
 <body>
@@ -54,75 +84,112 @@
     </header>
 
     <section class="card">
-      <h2>Monte seu perfil</h2>
-      <p class="lead">Preencha seus dados e escolha quem vai acompanhar você nos treinos.</p>
-
-      <form id="profileForm" autocomplete="on">
-        <div class="grid">
-          <div class="full">
-            <label for="name">Nome</label>
-            <input id="name" name="name" type="text" maxlength="50" placeholder="Como você quer ser chamado?" autocomplete="name" required />
-          </div>
-
+      <div id="profileHome" class="profile-home">
+        <div class="welcome">
+          <div class="welcome-avatar"><img id="homeAvatar" alt="Seu avatar" /></div>
           <div>
-            <label for="age">Idade</label>
-            <input id="age" name="age" type="number" min="10" max="100" inputmode="numeric" placeholder="Ex.: 38" required />
+            <div class="hello">Seu treino está pronto</div>
+            <h2 id="welcomeName">Olá!</h2>
+            <p id="profileSub" class="profile-sub"></p>
           </div>
+        </div>
 
-          <div>
-            <label for="height">Altura</label>
-            <div class="unit"><input id="height" name="height" type="number" min="100" max="230" inputmode="numeric" placeholder="Ex.: 187" required /><span>cm</span></div>
-          </div>
+        <div class="profile-data">
+          <div class="data-box"><strong id="homeAge">—</strong><span>Idade</span></div>
+          <div class="data-box"><strong id="homeHeight">—</strong><span>Altura</span></div>
+          <div class="data-box"><strong id="homeWeight">—</strong><span>Peso</span></div>
+        </div>
 
-          <div>
-            <label for="weight">Peso</label>
-            <div class="unit"><input id="weight" name="weight" type="number" min="30" max="300" step="0.1" inputmode="decimal" placeholder="Ex.: 82" required /><span>kg</span></div>
-          </div>
+        <div class="home-actions">
+          <button id="goWorkout" class="primary" type="button">▶ Iniciar treino</button>
+          <button id="editProfile" class="secondary" type="button">Editar perfil</button>
+        </div>
+        <p class="saved-note">Seu perfil fica salvo neste dispositivo.</p>
+      </div>
 
-          <div>
-            <label>Sexo</label>
-            <div class="sex-row" role="group" aria-label="Sexo">
-              <button class="choice" type="button" data-sex="Woman">Feminino</button>
-              <button class="choice" type="button" data-sex="Man">Masculino</button>
+      <div id="formView" class="form-view">
+        <h2 id="formTitle">Monte seu perfil</h2>
+        <p id="formLead" class="lead">Preencha seus dados e escolha quem vai acompanhar você nos treinos.</p>
+
+        <form id="profileForm" autocomplete="on">
+          <div class="grid">
+            <div class="full">
+              <label for="name">Nome</label>
+              <input id="name" name="name" type="text" maxlength="50" placeholder="Como você quer ser chamado?" autocomplete="name" required />
+            </div>
+
+            <div>
+              <label for="age">Idade</label>
+              <input id="age" name="age" type="number" min="10" max="100" inputmode="numeric" placeholder="Ex.: 38" required />
+            </div>
+
+            <div>
+              <label for="height">Altura</label>
+              <div class="unit"><input id="height" name="height" type="number" min="100" max="230" inputmode="numeric" placeholder="Ex.: 187" required /><span>cm</span></div>
+            </div>
+
+            <div>
+              <label for="weight">Peso</label>
+              <div class="unit"><input id="weight" name="weight" type="number" min="30" max="300" step="0.1" inputmode="decimal" placeholder="Ex.: 82" required /><span>kg</span></div>
+            </div>
+
+            <div>
+              <label>Sexo</label>
+              <div class="sex-row" role="group" aria-label="Sexo">
+                <button class="choice" type="button" data-sex="Woman">Feminino</button>
+                <button class="choice" type="button" data-sex="Man">Masculino</button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div id="avatarArea" class="avatar-area" aria-live="polite">
-          <div class="avatar-title">
-            <h3>Escolha seu avatar</h3>
-            <span>Você poderá alterar depois</span>
+          <div id="avatarArea" class="avatar-area" aria-live="polite">
+            <div class="avatar-title">
+              <h3>Escolha seu avatar</h3>
+              <span>Você poderá alterar depois</span>
+            </div>
+            <div id="avatars" class="avatars"></div>
           </div>
-          <div id="avatars" class="avatars"></div>
-        </div>
 
-        <div class="actions">
-          <button id="start" type="submit" disabled>Começar</button>
-          <p class="privacy">Seus dados ficam salvos neste dispositivo para personalizar sua experiência.</p>
-        </div>
-      </form>
-
-      <div id="resume" class="resume"><button type="button" id="resumeBtn">Continuar com o perfil salvo</button></div>
+          <div class="actions">
+            <button id="start" type="submit" disabled>Começar</button>
+            <button id="cancelEdit" type="button">Cancelar edição</button>
+            <p class="privacy">Seus dados ficam salvos neste dispositivo para personalizar sua experiência.</p>
+          </div>
+        </form>
+      </div>
     </section>
   </main>
 
   <script>
     const PROFILE_KEY='moveup_profile_v1';
     const colors=[['Brown','Castanho'],['Blond','Loiro'],['Red','Ruivo'],['Black','Negro']];
+    const colorLabels=Object.fromEntries(colors);
     let selectedSex='';
     let selectedAvatar='';
+    let editingExisting=false;
+    let currentProfile=null;
 
+    const profileHome=document.getElementById('profileHome');
+    const formView=document.getElementById('formView');
     const form=document.getElementById('profileForm');
     const avatarArea=document.getElementById('avatarArea');
     const avatars=document.getElementById('avatars');
     const start=document.getElementById('start');
+    const cancelEdit=document.getElementById('cancelEdit');
+    const formTitle=document.getElementById('formTitle');
+    const formLead=document.getElementById('formLead');
     const sexButtons=[...document.querySelectorAll('[data-sex]')];
     const fields=['name','age','height','weight'].map(id=>document.getElementById(id));
 
     const avatarFile=(sex,color)=>`avatar/Avatar_${sex}_${color}.jpg`;
+    const sexLabel=sex=>sex==='Woman'?'Feminino':'Masculino';
 
-    function renderAvatars(sex){
-      selectedAvatar='';
+    function getSavedProfile(){
+      try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch(_){return null}
+    }
+
+    function renderAvatars(sex,keepAvatar=''){
+      selectedAvatar=keepAvatar||'';
       avatars.innerHTML='';
       colors.forEach(([color,label])=>{
         const b=document.createElement('button');
@@ -130,6 +197,7 @@
         b.className='avatar';
         b.dataset.avatar=color;
         b.innerHTML=`<span class="check">✓</span><img src="${avatarFile(sex,color)}" alt="Avatar ${label}" loading="eager"><div class="name">${label}</div>`;
+        if(color===selectedAvatar)b.classList.add('selected');
         b.addEventListener('click',()=>{
           selectedAvatar=color;
           [...avatars.children].forEach(x=>x.classList.toggle('selected',x===b));
@@ -141,11 +209,13 @@
       validate();
     }
 
-    sexButtons.forEach(btn=>btn.addEventListener('click',()=>{
-      selectedSex=btn.dataset.sex;
-      sexButtons.forEach(x=>x.classList.toggle('selected',x===btn));
-      renderAvatars(selectedSex);
-    }));
+    function chooseSex(sex,avatar=''){
+      selectedSex=sex;
+      sexButtons.forEach(x=>x.classList.toggle('selected',x.dataset.sex===sex));
+      renderAvatars(sex,avatar);
+    }
+
+    sexButtons.forEach(btn=>btn.addEventListener('click',()=>chooseSex(btn.dataset.sex)));
 
     function validate(){
       const okFields=fields.every(f=>String(f.value).trim()!=='' && f.checkValidity());
@@ -153,10 +223,63 @@
     }
     fields.forEach(f=>f.addEventListener('input',validate));
 
+    function showHome(profile){
+      currentProfile=profile;
+      editingExisting=false;
+      formView.classList.add('hidden');
+      profileHome.classList.add('show');
+
+      document.getElementById('homeAvatar').src=profile.avatarBase||avatarFile(profile.sex,profile.avatar);
+      document.getElementById('welcomeName').textContent=`Olá, ${profile.name}`;
+      document.getElementById('profileSub').textContent=`${sexLabel(profile.sex)} · ${colorLabels[profile.avatar]||profile.avatar}`;
+      document.getElementById('homeAge').textContent=`${profile.age} anos`;
+      document.getElementById('homeHeight').textContent=`${profile.heightCm} cm`;
+      document.getElementById('homeWeight').textContent=`${profile.weightKg} kg`;
+    }
+
+    function showFormForNewProfile(){
+      currentProfile=null;
+      editingExisting=false;
+      profileHome.classList.remove('show');
+      formView.classList.remove('hidden');
+      formTitle.textContent='Monte seu perfil';
+      formLead.textContent='Preencha seus dados e escolha quem vai acompanhar você nos treinos.';
+      start.textContent='Começar';
+      cancelEdit.classList.remove('show');
+      form.reset();
+      selectedSex='';
+      selectedAvatar='';
+      sexButtons.forEach(x=>x.classList.remove('selected'));
+      avatars.innerHTML='';
+      avatarArea.classList.remove('show');
+      validate();
+    }
+
+    function showEdit(profile){
+      currentProfile=profile;
+      editingExisting=true;
+      profileHome.classList.remove('show');
+      formView.classList.remove('hidden');
+      formTitle.textContent='Editar perfil';
+      formLead.textContent='Atualize seus dados ou troque seu avatar.';
+      start.textContent='Salvar alterações';
+      cancelEdit.classList.add('show');
+
+      document.getElementById('name').value=profile.name||'';
+      document.getElementById('age').value=profile.age??'';
+      document.getElementById('height').value=profile.heightCm??'';
+      document.getElementById('weight').value=profile.weightKg??'';
+      chooseSex(profile.sex,profile.avatar);
+      validate();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
     form.addEventListener('submit',e=>{
       e.preventDefault();
       validate();
       if(start.disabled)return;
+
+      const old=currentProfile||{};
       const profile={
         name:document.getElementById('name').value.trim(),
         age:Number(document.getElementById('age').value),
@@ -165,22 +288,35 @@
         sex:selectedSex,
         avatar:selectedAvatar,
         avatarBase:avatarFile(selectedSex,selectedAvatar),
-        createdAt:new Date().toISOString()
+        createdAt:old.createdAt||new Date().toISOString(),
+        updatedAt:new Date().toISOString()
       };
+
       localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
-      location.href='routine.html';
+      currentProfile=profile;
+
+      if(editingExisting){
+        showHome(profile);
+      }else{
+        location.href='routine.html';
+      }
     });
 
-    const saved=localStorage.getItem(PROFILE_KEY);
-    if(saved){
-      try{
-        const p=JSON.parse(saved);
-        if(p && p.name && p.sex && p.avatar){
-          document.getElementById('resume').style.display='block';
-          document.getElementById('resumeBtn').textContent=`Continuar como ${p.name}`;
-          document.getElementById('resumeBtn').onclick=()=>location.href='routine.html';
-        }
-      }catch(_){ }
+    document.getElementById('goWorkout').addEventListener('click',()=>location.href='routine.html');
+    document.getElementById('editProfile').addEventListener('click',()=>{
+      const p=getSavedProfile();
+      if(p)showEdit(p);
+    });
+    cancelEdit.addEventListener('click',()=>{
+      const p=getSavedProfile();
+      if(p)showHome(p);
+    });
+
+    const saved=getSavedProfile();
+    if(saved && saved.name && saved.sex && saved.avatar){
+      showHome(saved);
+    }else{
+      showFormForNewProfile();
     }
   </script>
 </body>
