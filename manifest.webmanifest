@@ -5,7 +5,7 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f6f9fd",
-  "theme_color": "#07163f",
+  "background_color": "#ffffff",
+  "theme_color": "#4f5e46",
   "orientation": "portrait-primary"
 }
