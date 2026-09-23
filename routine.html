@@ -30,6 +30,7 @@
       'Push Ups':'PushUps',
       'Pull-Up / Chin-Up':'PullUp'
     };
+    const EXERCISE_ORDER=Object.keys(EXERCISE_IMAGE_NAMES);
 
     function getSavedProfile(){
       try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')}catch(_){return {}}
@@ -66,6 +67,87 @@
       }
     }
 
+    function installNavigationLogic(doc){
+      if(doc.getElementById('moveupNavigationLogic')) return;
+      const script=doc.createElement('script');
+      script.id='moveupNavigationLogic';
+      script.textContent=`
+        (function(){
+          window.moveupJumpExercise=function(delta){
+            try{
+              if(!['countdown','exercise','rest','paused'].includes(phase)) return;
+              const target=Math.max(0,Math.min(EXERCISES.length-1,current+(Number(delta)||0)));
+              if(target===current) return;
+              clearInterval(timerId);
+              current=target;
+              phase='exercise';
+              inferPausedPhase='exercise';
+              pausedRemaining=0;
+              phaseDuration=WORK;
+              deadline=performance.now()+WORK*1000;
+              lastBeepSecond=WORK;
+              $('pauseBtn').textContent='Ⅱ Pausar';
+              requestWakeLock();
+              renderWorkout(WORK);
+              startTicker();
+            }catch(e){console.error('MoveUp exercise navigation failed',e)}
+          };
+        })();
+      `;
+      doc.body.appendChild(script);
+    }
+
+    function updateNavButtons(doc){
+      const currentName=doc.getElementById('exerciseName')?.textContent?.trim();
+      const index=EXERCISE_ORDER.indexOf(currentName);
+      const prev=doc.getElementById('prevExerciseBtn');
+      const next=doc.getElementById('nextExerciseBtn');
+      if(prev) prev.disabled=index<=0;
+      if(next) next.disabled=index<0 || index>=EXERCISE_ORDER.length-1;
+    }
+
+    function enhanceWorkoutUI(doc){
+      const visual=doc.querySelector('.visual-wrap');
+      const desc=doc.getElementById('exerciseDesc');
+      const detailArea=visual?.nextElementSibling;
+      const timerArea=detailArea?.querySelector('.timer-area');
+
+      if(desc && detailArea && timerArea && !doc.getElementById('moveupInstruction')){
+        const instruction=doc.createElement('div');
+        instruction.id='moveupInstruction';
+        instruction.className='moveup-instruction';
+        detailArea.insertBefore(instruction,timerArea);
+        instruction.appendChild(desc);
+      }
+
+      const controls=doc.querySelector('.controls');
+      const pause=doc.getElementById('pauseBtn');
+      const restart=doc.getElementById('restartBtn');
+      if(controls && pause && restart && !doc.getElementById('prevExerciseBtn')){
+        const prev=doc.createElement('button');
+        prev.id='prevExerciseBtn';
+        prev.type='button';
+        prev.className='control moveup-nav';
+        prev.setAttribute('aria-label','Voltar ao exercício anterior');
+        prev.title='Exercício anterior';
+        prev.textContent='←';
+
+        const next=doc.createElement('button');
+        next.id='nextExerciseBtn';
+        next.type='button';
+        next.className='control moveup-nav';
+        next.setAttribute('aria-label','Avançar para o próximo exercício');
+        next.title='Próximo exercício';
+        next.textContent='→';
+
+        controls.insertBefore(prev,pause);
+        controls.appendChild(next);
+        prev.addEventListener('click',()=>frame.contentWindow.moveupJumpExercise?.(-1));
+        next.addEventListener('click',()=>frame.contentWindow.moveupJumpExercise?.(1));
+      }
+      updateNavButtons(doc);
+    }
+
     const frame=document.getElementById('workoutFrame');
     frame.addEventListener('load',()=>{
       try{
@@ -83,13 +165,25 @@
         const meta=doc.querySelector('meta[name="theme-color"]');
         if(meta) meta.setAttribute('content','#4f5e46');
 
+        installNavigationLogic(doc);
+        enhanceWorkoutUI(doc);
         applyAvatarImages(doc);
-        setTimeout(()=>applyAvatarImages(doc),0);
-        setTimeout(()=>applyAvatarImages(doc),250);
+
+        setTimeout(()=>{
+          enhanceWorkoutUI(doc);
+          applyAvatarImages(doc);
+        },0);
+        setTimeout(()=>{
+          enhanceWorkoutUI(doc);
+          applyAvatarImages(doc);
+        },250);
 
         const nameEl=doc.getElementById('exerciseName');
         if(nameEl){
-          new MutationObserver(()=>applyAvatarImages(doc)).observe(nameEl,{childList:true,subtree:true,characterData:true});
+          new MutationObserver(()=>{
+            applyAvatarImages(doc);
+            updateNavButtons(doc);
+          }).observe(nameEl,{childList:true,subtree:true,characterData:true});
         }
 
         const grid=doc.getElementById('exerciseGrid');
