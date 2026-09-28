@@ -45,6 +45,8 @@
     .calendar-day{min-height:50px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;background:transparent}
     .calendar-day.empty{visibility:hidden}
     .calendar-day.today{background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+    .calendar-day.has-workout{cursor:pointer;transition:.15s ease}
+    .calendar-day.has-workout:hover{background:var(--accent-soft)}
     .day-number{font-size:12px;font-weight:750;color:#777}
     .workout-badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:11px;font-weight:900;line-height:1;box-shadow:0 4px 10px rgba(79,94,70,.18)}
     .calendar-legend{margin:12px 0 0;color:#92928e;font-size:11px;text-align:center;line-height:1.4}
@@ -86,6 +88,26 @@
     #cancelEdit.show{display:block}
     .privacy{text-align:center;color:#999;font-size:11px;margin:11px 8px 0;line-height:1.4}
 
+    .history-backdrop{position:fixed;inset:0;background:rgba(20,24,18,.48);display:none;align-items:flex-end;justify-content:center;z-index:30;padding:18px}
+    .history-backdrop.show{display:flex}
+    .history-sheet{width:min(680px,100%);max-height:86dvh;overflow:auto;background:#fff;border-radius:24px;padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.24)}
+    .history-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .history-sheet-head h3{margin:0;font-size:23px;letter-spacing:-.03em}
+    .history-day-total{margin:4px 0 0;color:var(--accent-dark);font-weight:850;font-size:14px}
+    .history-close{width:36px;height:36px;border-radius:12px;border:1px solid var(--line);background:#fff;color:#444;font-size:22px;cursor:pointer}
+    .history-session{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:12px}
+    .history-session-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:var(--soft)}
+    .history-session-title{font-weight:850;font-size:13px}
+    .history-session-meta{color:var(--muted);font-size:10px;margin-top:2px}
+    .history-session-kcal{color:var(--accent-dark);font-size:14px;font-weight:900;white-space:nowrap}
+    .history-row{display:grid;grid-template-columns:minmax(0,1fr) 78px 65px;gap:6px;align-items:center;padding:7px 10px;border-top:1px solid #f0f0ee;font-size:10px}
+    .history-row:first-child{border-top:0}
+    .history-row-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .history-row-intensity{text-align:center;color:var(--accent-dark);font-weight:800}
+    .history-row-kcal{text-align:right;font-weight:800}
+    .history-row.skipped{opacity:.5}
+    .history-legacy{margin:14px 0 0;padding:11px 12px;border-radius:13px;background:#f8f8f6;color:#777;font-size:11px;line-height:1.4}
+
     @media(max-width:640px){
       body{min-height:100dvh;overflow-x:hidden}
       .page{padding:12px 12px 16px}
@@ -93,18 +115,15 @@
       .brand h1{font-size:38px;line-height:.92}
       .brand p{margin-top:5px;font-size:12px}
       .card{padding:13px;border-radius:18px}
-
       .welcome{grid-template-columns:72px 1fr;gap:11px}
       .welcome-avatar{width:72px;height:88px;border-radius:15px}
       .hello{font-size:10px;letter-spacing:.1em;margin-bottom:2px}
       .welcome h2{font-size:25px;margin-bottom:4px}
       .profile-sub{font-size:12px}
-
       .profile-data{grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
       .data-box{padding:7px 5px;border-radius:12px;text-align:center}
       .data-box strong{font-size:14px;line-height:1.1}
       .data-box span{font-size:8px;margin-top:2px}
-
       .calendar-block{margin-top:10px;padding-top:9px}
       .calendar-head{margin-bottom:6px;gap:6px}
       .calendar-title{font-size:14px;white-space:nowrap}
@@ -118,12 +137,14 @@
       .day-number{font-size:9px;line-height:1}
       .workout-badge{width:21px;height:21px;font-size:8px;box-shadow:none}
       .calendar-legend{margin:5px 0 0;font-size:9px;line-height:1.2}
-
       .home-actions{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:6px;margin-top:10px}
       .primary,.secondary{height:42px;border-radius:12px;padding:0 9px;font-size:12px}
       .saved-note{font-size:9px;margin:5px 4px 0}
-
       .grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}
+      .history-backdrop{padding:8px}
+      .history-sheet{max-height:91dvh;border-radius:20px;padding:14px}
+      .history-sheet-head h3{font-size:20px}
+      .history-row{grid-template-columns:minmax(0,1fr) 66px 58px;padding:6px 7px;font-size:9px}
     }
 
     @media(max-width:640px) and (max-height:720px){
@@ -184,7 +205,7 @@
             <div class="weekday">Dom</div><div class="weekday">Seg</div><div class="weekday">Ter</div><div class="weekday">Qua</div><div class="weekday">Qui</div><div class="weekday">Sex</div><div class="weekday">Sáb</div>
           </div>
           <div id="calendarGrid" class="calendar-grid"></div>
-          <p class="calendar-legend">A bolinha verde mostra quantas sequências completas você fez em cada dia.</p>
+          <p class="calendar-legend">Toque em um dia marcado para ver as sequências e calorias estimadas.</p>
         </div>
 
         <div class="home-actions">
@@ -243,9 +264,24 @@
     </section>
   </main>
 
+  <div id="historyBackdrop" class="history-backdrop" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+    <div class="history-sheet">
+      <div class="history-sheet-head">
+        <div>
+          <h3 id="historyTitle">Histórico do dia</h3>
+          <p id="historyDayTotal" class="history-day-total"></p>
+        </div>
+        <button id="historyClose" class="history-close" type="button" aria-label="Fechar">×</button>
+      </div>
+      <div id="historyContent"></div>
+    </div>
+  </div>
+
   <script>
     const PROFILE_KEY='moveup_profile_v1';
     const HISTORY_KEY='morningRoutineHistory';
+    const SESSION_HISTORY_KEY='moveup_session_history_v1';
+    const INTENSITY_LABELS={light:'Leve',moderate:'Moderado',intense:'Intenso'};
     const colors=[['Brown','Castanho'],['Blond','Loiro'],['Red','Ruivo'],['Black','Negro']];
     const colorLabels=Object.fromEntries(colors);
     let selectedSex='';
@@ -269,6 +305,7 @@
 
     const avatarFile=(sex,color)=>`avatar/Avatar_${sex}_${color}.jpg`;
     const sexLabel=sex=>sex==='Woman'?'Feminino':'Masculino';
+    const formatKcal=value=>{const n=Number(value)||0;return Number.isInteger(n)?String(n):n.toFixed(1).replace('.',',')};
 
     function getSavedProfile(){
       try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch(_){return null}
@@ -281,8 +318,52 @@
       }catch(_){return {}}
     }
 
+    function getSessionHistory(){
+      try{
+        const h=JSON.parse(localStorage.getItem(SESSION_HISTORY_KEY)||'{}');
+        return h&&typeof h==='object'?h:{};
+      }catch(_){return {}}
+    }
+
     function calendarDateKey(year,monthIndex,day){
       return `${year}-${String(monthIndex+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    }
+
+    function formatDateKey(key){
+      const [year,month,day]=key.split('-').map(Number);
+      return new Date(year,month-1,day).toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});
+    }
+
+    function formatTime(iso){
+      if(!iso)return '';
+      try{return new Date(iso).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}catch(_){return ''}
+    }
+
+    function openDayHistory(key,legacyCount){
+      const sessions=getSessionHistory()[key]||[];
+      const total=sessions.reduce((sum,s)=>sum+(Number(s.totalKcal)||0),0);
+      document.getElementById('historyTitle').textContent=formatDateKey(key);
+      document.getElementById('historyDayTotal').textContent=sessions.length?`Total com calorias registradas: ~${formatKcal(total)} kcal`:'';
+
+      const html=sessions.map((session,index)=>{
+        const rows=(session.exercises||[]).map(item=>{
+          const intensity=item.status==='skipped'?'Pulado':INTENSITY_LABELS[item.intensity]||'Moderado';
+          return `<div class="history-row ${item.status==='skipped'?'skipped':''}"><span class="history-row-name">${item.name}</span><span class="history-row-intensity">${intensity}</span><span class="history-row-kcal">${item.status==='skipped'?'0':`~${formatKcal(item.kcal)}`} kcal</span></div>`;
+        }).join('');
+        return `<section class="history-session"><div class="history-session-head"><div><div class="history-session-title">Sequência ${index+1}</div><div class="history-session-meta">${formatTime(session.completedAt)} · ${session.weightKg||'—'} kg</div></div><div class="history-session-kcal">~${formatKcal(session.totalKcal)} kcal</div></div><div>${rows}</div></section>`;
+      }).join('');
+
+      const missing=Math.max(0,Number(legacyCount||0)-sessions.length);
+      const legacyNote=missing?`<div class="history-legacy">${missing} sequência${missing>1?'s':''} deste dia foi${missing>1?'ram':''} registrada${missing>1?'s':''} antes do detalhamento de intensidade e calorias. Por isso, não há calorias disponíveis para ${missing>1?'essas sequências':'essa sequência'}.</div>`:'';
+      document.getElementById('historyContent').innerHTML=html||legacyNote||'<div class="history-legacy">Ainda não há detalhes de treino para este dia.</div>';
+      if(html&&legacyNote)document.getElementById('historyContent').insertAdjacentHTML('beforeend',legacyNote);
+      document.getElementById('historyBackdrop').classList.add('show');
+      document.body.style.overflow='hidden';
+    }
+
+    function closeDayHistory(){
+      document.getElementById('historyBackdrop').classList.remove('show');
+      document.body.style.overflow='';
     }
 
     function renderCalendar(){
@@ -314,10 +395,14 @@
         number.textContent=day;
         cell.appendChild(number);
         if(count>0){
+          cell.classList.add('has-workout');
+          cell.tabIndex=0;
           const badge=document.createElement('span');
           badge.className='workout-badge';
           badge.textContent=`${count}x`;
           cell.appendChild(badge);
+          cell.addEventListener('click',()=>openDayHistory(key,count));
+          cell.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDayHistory(key,count)}});
         }
         grid.appendChild(cell);
       }
@@ -434,6 +519,9 @@
     cancelEdit.addEventListener('click',()=>{const p=getSavedProfile();if(p)showHome(p)});
     document.getElementById('prevMonth').addEventListener('click',()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);renderCalendar()});
     document.getElementById('nextMonth').addEventListener('click',()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);renderCalendar()});
+    document.getElementById('historyClose').addEventListener('click',closeDayHistory);
+    document.getElementById('historyBackdrop').addEventListener('click',e=>{if(e.target.id==='historyBackdrop')closeDayHistory()});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDayHistory()});
     document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profileHome.classList.contains('show'))renderCalendar()});
     window.addEventListener('focus',()=>{if(profileHome.classList.contains('show'))renderCalendar()});
 
