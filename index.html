@@ -19,7 +19,6 @@
     .lead{margin:0 0 22px;color:var(--muted);font-size:14px}
     .hidden{display:none!important}
 
-    /* Home com perfil salvo */
     .profile-home{display:none}
     .profile-home.show{display:block}
     .welcome{display:grid;grid-template-columns:132px 1fr;gap:22px;align-items:center}
@@ -33,7 +32,6 @@
     .data-box strong{display:block;font-size:18px;letter-spacing:-.02em}
     .data-box span{display:block;color:var(--muted);font-size:11px;margin-top:3px;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
 
-    /* Calendário de treinos */
     .calendar-block{margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
     .calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
     .calendar-title{font-size:17px;font-weight:850;letter-spacing:-.02em}
@@ -58,7 +56,6 @@
     .secondary:hover{background:var(--accent-soft)}
     .saved-note{text-align:center;color:#999;font-size:11px;margin:12px 8px 0;line-height:1.4}
 
-    /* Cadastro / edição */
     .form-view{display:block}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
     label{display:block;font-size:13px;font-weight:700;margin:0 0 7px}
@@ -90,9 +87,63 @@
     .privacy{text-align:center;color:#999;font-size:11px;margin:11px 8px 0;line-height:1.4}
 
     @media(max-width:640px){
-      .page{padding:26px 15px 36px}.card{padding:19px;border-radius:21px}.grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}.brand{margin-bottom:21px}.brand p{font-size:14px}
-      .welcome{grid-template-columns:96px 1fr;gap:15px}.welcome-avatar{width:96px;height:120px;border-radius:18px}.welcome h2{font-size:30px}.profile-data{grid-template-columns:repeat(3,1fr);gap:7px}.data-box{padding:11px 9px;text-align:center}.data-box strong{font-size:16px}.data-box span{font-size:9px}.home-actions{grid-template-columns:1fr}.secondary{width:100%}
-      .calendar-block{margin-top:20px;padding-top:19px}.calendar-head{align-items:flex-start}.calendar-title{font-size:16px}.calendar-month{min-width:112px;font-size:12px}.weekdays,.calendar-grid{gap:3px}.calendar-day{min-height:45px}.workout-badge{width:28px;height:28px;font-size:10px}.day-number{font-size:11px}
+      body{min-height:100dvh;overflow-x:hidden}
+      .page{padding:12px 12px 16px}
+      .brand{margin-bottom:10px}
+      .brand h1{font-size:38px;line-height:.92}
+      .brand p{margin-top:5px;font-size:12px}
+      .card{padding:13px;border-radius:18px}
+
+      .welcome{grid-template-columns:72px 1fr;gap:11px}
+      .welcome-avatar{width:72px;height:88px;border-radius:15px}
+      .hello{font-size:10px;letter-spacing:.1em;margin-bottom:2px}
+      .welcome h2{font-size:25px;margin-bottom:4px}
+      .profile-sub{font-size:12px}
+
+      .profile-data{grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
+      .data-box{padding:7px 5px;border-radius:12px;text-align:center}
+      .data-box strong{font-size:14px;line-height:1.1}
+      .data-box span{font-size:8px;margin-top:2px}
+
+      .calendar-block{margin-top:10px;padding-top:9px}
+      .calendar-head{margin-bottom:6px;gap:6px}
+      .calendar-title{font-size:14px;white-space:nowrap}
+      .calendar-nav{gap:4px}
+      .calendar-month{min-width:108px;font-size:11px}
+      .month-btn{width:28px;height:28px;border-radius:9px;font-size:15px}
+      .weekdays,.calendar-grid{gap:1px}
+      .weekdays{margin-bottom:1px}
+      .weekday{font-size:8px}
+      .calendar-day{min-height:34px;border-radius:9px;gap:1px}
+      .day-number{font-size:9px;line-height:1}
+      .workout-badge{width:21px;height:21px;font-size:8px;box-shadow:none}
+      .calendar-legend{margin:5px 0 0;font-size:9px;line-height:1.2}
+
+      .home-actions{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:6px;margin-top:10px}
+      .primary,.secondary{height:42px;border-radius:12px;padding:0 9px;font-size:12px}
+      .saved-note{font-size:9px;margin:5px 4px 0}
+
+      .grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}
+    }
+
+    @media(max-width:640px) and (max-height:720px){
+      .page{padding-top:8px;padding-bottom:8px}
+      .brand{margin-bottom:7px}
+      .brand h1{font-size:34px}
+      .brand p{font-size:11px}
+      .card{padding:10px}
+      .welcome{grid-template-columns:62px 1fr;gap:9px}
+      .welcome-avatar{width:62px;height:76px}
+      .welcome h2{font-size:22px}
+      .profile-data{margin-top:7px}
+      .data-box{padding:5px 4px}
+      .calendar-block{margin-top:7px;padding-top:6px}
+      .calendar-head{margin-bottom:3px}
+      .calendar-day{min-height:30px}
+      .calendar-legend{display:none}
+      .home-actions{margin-top:7px}
+      .primary,.secondary{height:38px}
+      .saved-note{display:none}
     }
   </style>
 </head>
@@ -153,22 +204,18 @@
               <label for="name">Nome</label>
               <input id="name" name="name" type="text" maxlength="50" placeholder="Como você quer ser chamado?" autocomplete="name" required />
             </div>
-
             <div>
               <label for="age">Idade</label>
               <input id="age" name="age" type="number" min="10" max="100" inputmode="numeric" placeholder="Ex.: 38" required />
             </div>
-
             <div>
               <label for="height">Altura</label>
               <div class="unit"><input id="height" name="height" type="number" min="100" max="230" inputmode="numeric" placeholder="Ex.: 187" required /><span>cm</span></div>
             </div>
-
             <div>
               <label for="weight">Peso</label>
               <div class="unit"><input id="weight" name="weight" type="number" min="30" max="300" step="0.1" inputmode="decimal" placeholder="Ex.: 82" required /><span>kg</span></div>
             </div>
-
             <div>
               <label>Sexo</label>
               <div class="sex-row" role="group" aria-label="Sexo">
@@ -230,7 +277,7 @@
     function getWorkoutHistory(){
       try{
         const h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}');
-        return h && typeof h==='object' ? h : {};
+        return h&&typeof h==='object'?h:{};
       }catch(_){return {}}
     }
 
@@ -242,22 +289,18 @@
       const grid=document.getElementById('calendarGrid');
       const monthLabel=document.getElementById('calendarMonth');
       if(!grid||!monthLabel)return;
-
       const year=calendarCursor.getFullYear();
       const month=calendarCursor.getMonth();
       const firstWeekday=new Date(year,month,1).getDay();
       const daysInMonth=new Date(year,month+1,0).getDate();
       const history=getWorkoutHistory();
-
       monthLabel.textContent=new Date(year,month,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
       grid.innerHTML='';
-
       for(let i=0;i<firstWeekday;i++){
         const empty=document.createElement('div');
         empty.className='calendar-day empty';
         grid.appendChild(empty);
       }
-
       for(let day=1;day<=daysInMonth;day++){
         const key=calendarDateKey(year,month,day);
         const count=Number(history[key]||0);
@@ -266,12 +309,10 @@
         const isToday=year===now.getFullYear()&&month===now.getMonth()&&day===now.getDate();
         if(isToday)cell.classList.add('today');
         cell.setAttribute('aria-label',count?`${day}: ${count} sequência${count>1?'s':''} concluída${count>1?'s':''}`:`${day}: nenhuma sequência concluída`);
-
         const number=document.createElement('span');
         number.className='day-number';
         number.textContent=day;
         cell.appendChild(number);
-
         if(count>0){
           const badge=document.createElement('span');
           badge.className='workout-badge';
@@ -312,8 +353,8 @@
     sexButtons.forEach(btn=>btn.addEventListener('click',()=>chooseSex(btn.dataset.sex)));
 
     function validate(){
-      const okFields=fields.every(f=>String(f.value).trim()!=='' && f.checkValidity());
-      start.disabled=!(okFields && selectedSex && selectedAvatar);
+      const okFields=fields.every(f=>String(f.value).trim()!==''&&f.checkValidity());
+      start.disabled=!(okFields&&selectedSex&&selectedAvatar);
     }
     fields.forEach(f=>f.addEventListener('input',validate));
 
@@ -322,7 +363,6 @@
       editingExisting=false;
       formView.classList.add('hidden');
       profileHome.classList.add('show');
-
       document.getElementById('homeAvatar').src=profile.avatarBase||avatarFile(profile.sex,profile.avatar);
       document.getElementById('welcomeName').textContent=`Olá, ${profile.name}`;
       document.getElementById('profileSub').textContent=`${sexLabel(profile.sex)} · ${colorLabels[profile.avatar]||profile.avatar}`;
@@ -359,7 +399,6 @@
       formLead.textContent='Atualize seus dados ou troque seu avatar.';
       start.textContent='Salvar alterações';
       cancelEdit.classList.add('show');
-
       document.getElementById('name').value=profile.name||'';
       document.getElementById('age').value=profile.age??'';
       document.getElementById('height').value=profile.heightCm??'';
@@ -373,7 +412,6 @@
       e.preventDefault();
       validate();
       if(start.disabled)return;
-
       const old=currentProfile||{};
       const profile={
         name:document.getElementById('name').value.trim(),
@@ -386,49 +424,21 @@
         createdAt:old.createdAt||new Date().toISOString(),
         updatedAt:new Date().toISOString()
       };
-
       localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
       currentProfile=profile;
-
-      if(editingExisting){
-        showHome(profile);
-      }else{
-        location.href='routine.html';
-      }
+      if(editingExisting)showHome(profile);else location.href='routine.html';
     });
 
     document.getElementById('goWorkout').addEventListener('click',()=>location.href='routine.html');
-    document.getElementById('editProfile').addEventListener('click',()=>{
-      const p=getSavedProfile();
-      if(p)showEdit(p);
-    });
-    cancelEdit.addEventListener('click',()=>{
-      const p=getSavedProfile();
-      if(p)showHome(p);
-    });
-
-    document.getElementById('prevMonth').addEventListener('click',()=>{
-      calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);
-      renderCalendar();
-    });
-    document.getElementById('nextMonth').addEventListener('click',()=>{
-      calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);
-      renderCalendar();
-    });
-
-    document.addEventListener('visibilitychange',()=>{
-      if(!document.hidden && profileHome.classList.contains('show'))renderCalendar();
-    });
-    window.addEventListener('focus',()=>{
-      if(profileHome.classList.contains('show'))renderCalendar();
-    });
+    document.getElementById('editProfile').addEventListener('click',()=>{const p=getSavedProfile();if(p)showEdit(p)});
+    cancelEdit.addEventListener('click',()=>{const p=getSavedProfile();if(p)showHome(p)});
+    document.getElementById('prevMonth').addEventListener('click',()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);renderCalendar()});
+    document.getElementById('nextMonth').addEventListener('click',()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);renderCalendar()});
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profileHome.classList.contains('show'))renderCalendar()});
+    window.addEventListener('focus',()=>{if(profileHome.classList.contains('show'))renderCalendar()});
 
     const saved=getSavedProfile();
-    if(saved && saved.name && saved.sex && saved.avatar){
-      showHome(saved);
-    }else{
-      showFormForNewProfile();
-    }
+    if(saved&&saved.name&&saved.sex&&saved.avatar)showHome(saved);else showFormForNewProfile();
   </script>
 </body>
 </html>
