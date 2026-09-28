@@ -63,6 +63,24 @@ html,body{background:#fff!important;color:var(--ink)}
   text-align:center !important;
 }
 
+/* --- Intensity selection during rest --- */
+.moveup-intensity-panel{
+  display:none;
+  width:min(92vw,600px);
+  margin:0 auto 8px;
+  padding:9px 10px 8px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:16px;
+  background:rgba(255,255,255,.09);
+  text-align:center;
+}
+.moveup-intensity-panel.show{display:block}
+.moveup-intensity-question{font-size:12px;font-weight:850;color:#fff;margin-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.moveup-intensity-options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.moveup-intensity-options button{height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:800;cursor:pointer}
+.moveup-intensity-options button.selected{background:#dce7d5;color:#3f4b39;border-color:#dce7d5}
+.moveup-intensity-kcal{margin-top:6px;color:#e8efe4;font-size:10px;font-weight:700}
+
 /* --- Footer controls: previous / pause / restart / next --- */
 .controls{
   gap:6px !important;
@@ -95,10 +113,34 @@ html,body{background:#fff!important;color:var(--ink)}
   cursor:not-allowed !important;
 }
 
+/* --- Completed session calorie summary --- */
+.complete{overflow-y:auto!important;justify-content:flex-start!important;padding-top:34px!important;padding-bottom:34px!important}
+.moveup-session-summary{width:min(94vw,680px);margin:0 auto 24px;text-align:left;background:#fff;border:1px solid #e3e8df;border-radius:20px;box-shadow:0 10px 28px rgba(79,94,70,.08);overflow:hidden}
+.moveup-summary-head{padding:16px 18px;border-bottom:1px solid #edf0eb}
+.moveup-summary-head>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.moveup-summary-head span{font-size:13px;font-weight:800;color:#6b6b6b}
+.moveup-summary-head strong{font-size:24px;color:#4f5e46;white-space:nowrap}
+.moveup-summary-head small{display:block;margin-top:5px;color:#999;font-size:10px;line-height:1.35}
+.moveup-summary-list{padding:5px 0}
+.moveup-summary-row{display:grid;grid-template-columns:minmax(0,1fr) 86px 76px;gap:8px;align-items:center;padding:8px 14px;border-bottom:1px solid #f1f2ef;font-size:11px}
+.moveup-summary-row:last-child{border-bottom:0}
+.moveup-summary-name{font-weight:750;color:#252525;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.moveup-summary-intensity{color:#65745a;font-weight:800;text-align:center}
+.moveup-summary-row strong{text-align:right;color:#4f5e46;font-size:11px}
+.moveup-summary-row.skipped{opacity:.55}
+
 @media(max-width:640px){
   .visual-wrap{transform:translateY(-7px) !important}
   .moveup-instruction{margin:-3px auto 6px !important;padding:0 8px !important;min-height:32px !important}
   .moveup-instruction .desc{font-size:12px !important;line-height:1.35 !important}
+  .moveup-intensity-panel{padding:7px 8px 6px;margin-bottom:6px}
+  .moveup-intensity-question{font-size:11px;margin-bottom:5px}
+  .moveup-intensity-options button{height:31px;font-size:11px}
+  .moveup-intensity-kcal{font-size:9px;margin-top:4px}
   .controls #pauseBtn,.controls #restartBtn{font-size:13px !important;padding:11px 5px !important}
   .moveup-nav{flex-basis:42px !important;width:42px !important;height:42px !important;min-width:42px !important}
+  .moveup-summary-head{padding:14px}
+  .moveup-summary-head strong{font-size:21px}
+  .moveup-summary-row{grid-template-columns:minmax(0,1fr) 72px 64px;padding:7px 10px;gap:5px;font-size:10px}
+  .moveup-summary-row strong{font-size:10px}
 }
