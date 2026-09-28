@@ -32,6 +32,25 @@
     .data-box{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:14px 15px}
     .data-box strong{display:block;font-size:18px;letter-spacing:-.02em}
     .data-box span{display:block;color:var(--muted);font-size:11px;margin-top:3px;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
+
+    /* Calendário de treinos */
+    .calendar-block{margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
+    .calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .calendar-title{font-size:17px;font-weight:850;letter-spacing:-.02em}
+    .calendar-nav{display:flex;align-items:center;gap:8px}
+    .calendar-month{min-width:132px;text-align:center;font-size:13px;font-weight:800;color:var(--accent-dark);text-transform:capitalize}
+    .month-btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--accent-dark);font-weight:900;cursor:pointer;display:grid;place-items:center}
+    .month-btn:hover{background:var(--accent-soft)}
+    .weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .weekdays{margin-bottom:6px}
+    .weekday{text-align:center;color:#9a9a96;font-size:10px;font-weight:800;text-transform:uppercase}
+    .calendar-day{min-height:50px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;background:transparent}
+    .calendar-day.empty{visibility:hidden}
+    .calendar-day.today{background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+    .day-number{font-size:12px;font-weight:750;color:#777}
+    .workout-badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:11px;font-weight:900;line-height:1;box-shadow:0 4px 10px rgba(79,94,70,.18)}
+    .calendar-legend{margin:12px 0 0;color:#92928e;font-size:11px;text-align:center;line-height:1.4}
+
     .home-actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:22px}
     .primary{height:54px;border:0;border-radius:15px;background:var(--accent);color:#fff;font-weight:850;cursor:pointer;transition:.18s ease;padding:0 22px}
     .primary:hover{background:var(--accent-dark);transform:translateY(-1px)}
@@ -73,6 +92,7 @@
     @media(max-width:640px){
       .page{padding:26px 15px 36px}.card{padding:19px;border-radius:21px}.grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}.brand{margin-bottom:21px}.brand p{font-size:14px}
       .welcome{grid-template-columns:96px 1fr;gap:15px}.welcome-avatar{width:96px;height:120px;border-radius:18px}.welcome h2{font-size:30px}.profile-data{grid-template-columns:repeat(3,1fr);gap:7px}.data-box{padding:11px 9px;text-align:center}.data-box strong{font-size:16px}.data-box span{font-size:9px}.home-actions{grid-template-columns:1fr}.secondary{width:100%}
+      .calendar-block{margin-top:20px;padding-top:19px}.calendar-head{align-items:flex-start}.calendar-title{font-size:16px}.calendar-month{min-width:112px;font-size:12px}.weekdays,.calendar-grid{gap:3px}.calendar-day{min-height:45px}.workout-badge{width:28px;height:28px;font-size:10px}.day-number{font-size:11px}
     }
   </style>
 </head>
@@ -98,6 +118,22 @@
           <div class="data-box"><strong id="homeAge">—</strong><span>Idade</span></div>
           <div class="data-box"><strong id="homeHeight">—</strong><span>Altura</span></div>
           <div class="data-box"><strong id="homeWeight">—</strong><span>Peso</span></div>
+        </div>
+
+        <div class="calendar-block" aria-label="Histórico de treinos">
+          <div class="calendar-head">
+            <div class="calendar-title">Seu calendário</div>
+            <div class="calendar-nav">
+              <button id="prevMonth" class="month-btn" type="button" aria-label="Mês anterior">‹</button>
+              <div id="calendarMonth" class="calendar-month"></div>
+              <button id="nextMonth" class="month-btn" type="button" aria-label="Próximo mês">›</button>
+            </div>
+          </div>
+          <div class="weekdays" aria-hidden="true">
+            <div class="weekday">Dom</div><div class="weekday">Seg</div><div class="weekday">Ter</div><div class="weekday">Qua</div><div class="weekday">Qui</div><div class="weekday">Sex</div><div class="weekday">Sáb</div>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+          <p class="calendar-legend">A bolinha verde mostra quantas sequências completas você fez em cada dia.</p>
         </div>
 
         <div class="home-actions">
@@ -162,12 +198,15 @@
 
   <script>
     const PROFILE_KEY='moveup_profile_v1';
+    const HISTORY_KEY='morningRoutineHistory';
     const colors=[['Brown','Castanho'],['Blond','Loiro'],['Red','Ruivo'],['Black','Negro']];
     const colorLabels=Object.fromEntries(colors);
     let selectedSex='';
     let selectedAvatar='';
     let editingExisting=false;
     let currentProfile=null;
+    const now=new Date();
+    let calendarCursor=new Date(now.getFullYear(),now.getMonth(),1);
 
     const profileHome=document.getElementById('profileHome');
     const formView=document.getElementById('formView');
@@ -186,6 +225,61 @@
 
     function getSavedProfile(){
       try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch(_){return null}
+    }
+
+    function getWorkoutHistory(){
+      try{
+        const h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}');
+        return h && typeof h==='object' ? h : {};
+      }catch(_){return {}}
+    }
+
+    function calendarDateKey(year,monthIndex,day){
+      return `${year}-${String(monthIndex+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    }
+
+    function renderCalendar(){
+      const grid=document.getElementById('calendarGrid');
+      const monthLabel=document.getElementById('calendarMonth');
+      if(!grid||!monthLabel)return;
+
+      const year=calendarCursor.getFullYear();
+      const month=calendarCursor.getMonth();
+      const firstWeekday=new Date(year,month,1).getDay();
+      const daysInMonth=new Date(year,month+1,0).getDate();
+      const history=getWorkoutHistory();
+
+      monthLabel.textContent=new Date(year,month,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+      grid.innerHTML='';
+
+      for(let i=0;i<firstWeekday;i++){
+        const empty=document.createElement('div');
+        empty.className='calendar-day empty';
+        grid.appendChild(empty);
+      }
+
+      for(let day=1;day<=daysInMonth;day++){
+        const key=calendarDateKey(year,month,day);
+        const count=Number(history[key]||0);
+        const cell=document.createElement('div');
+        cell.className='calendar-day';
+        const isToday=year===now.getFullYear()&&month===now.getMonth()&&day===now.getDate();
+        if(isToday)cell.classList.add('today');
+        cell.setAttribute('aria-label',count?`${day}: ${count} sequência${count>1?'s':''} concluída${count>1?'s':''}`:`${day}: nenhuma sequência concluída`);
+
+        const number=document.createElement('span');
+        number.className='day-number';
+        number.textContent=day;
+        cell.appendChild(number);
+
+        if(count>0){
+          const badge=document.createElement('span');
+          badge.className='workout-badge';
+          badge.textContent=`${count}x`;
+          cell.appendChild(badge);
+        }
+        grid.appendChild(cell);
+      }
     }
 
     function renderAvatars(sex,keepAvatar=''){
@@ -235,6 +329,7 @@
       document.getElementById('homeAge').textContent=`${profile.age} anos`;
       document.getElementById('homeHeight').textContent=`${profile.heightCm} cm`;
       document.getElementById('homeWeight').textContent=`${profile.weightKg} kg`;
+      renderCalendar();
     }
 
     function showFormForNewProfile(){
@@ -310,6 +405,22 @@
     cancelEdit.addEventListener('click',()=>{
       const p=getSavedProfile();
       if(p)showHome(p);
+    });
+
+    document.getElementById('prevMonth').addEventListener('click',()=>{
+      calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);
+      renderCalendar();
+    });
+    document.getElementById('nextMonth').addEventListener('click',()=>{
+      calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);
+      renderCalendar();
+    });
+
+    document.addEventListener('visibilitychange',()=>{
+      if(!document.hidden && profileHome.classList.contains('show'))renderCalendar();
+    });
+    window.addEventListener('focus',()=>{
+      if(profileHome.classList.contains('show'))renderCalendar();
     });
 
     const saved=getSavedProfile();
