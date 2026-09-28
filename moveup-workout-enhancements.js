@@ -284,6 +284,18 @@
       const d=Number(delta)||0;
       if(!d)return;
       ensureSession();
+
+      if(d>0&&current===EXERCISES.length-1){
+        if(phase==='exercise'||phase==='countdown'||phase==='paused'){
+          setSkipped(EXERCISES[current].name);
+        }
+        finalRatingRest=false;
+        hideRatingPanel();
+        clearInterval(timerId);
+        finishRoutine();
+        return;
+      }
+
       if(d>0){
         const name=EXERCISES[current]?.name;
         if(name)setSkipped(name);
