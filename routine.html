@@ -103,6 +103,15 @@
       doc.body.appendChild(script);
     }
 
+    function installWorkoutEnhancements(doc){
+      if(doc.getElementById('moveupWorkoutEnhancements'))return;
+      const script=doc.createElement('script');
+      script.id='moveupWorkoutEnhancements';
+      script.src='moveup-workout-enhancements.js';
+      script.defer=false;
+      doc.body.appendChild(script);
+    }
+
     function updateNavButtons(doc){
       const currentName=doc.getElementById('exerciseName')?.textContent?.trim();
       const index=EXERCISE_ORDER.indexOf(currentName);
@@ -174,6 +183,7 @@
         updateDurationSummary(doc);
         installNavigationLogic(doc);
         enhanceWorkoutUI(doc);
+        installWorkoutEnhancements(doc);
         applyAvatarImages(doc);
 
         setTimeout(()=>{
