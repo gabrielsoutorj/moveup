@@ -67,6 +67,12 @@
       }
     }
 
+    function updateDurationSummary(doc){
+      doc.querySelectorAll('.rule strong').forEach(el=>{
+        if(el.textContent.includes('19 min')) el.textContent='≈ 21 min';
+      });
+    }
+
     function installNavigationLogic(doc){
       if(doc.getElementById('moveupNavigationLogic')) return;
       const script=doc.createElement('script');
@@ -165,15 +171,18 @@
         const meta=doc.querySelector('meta[name="theme-color"]');
         if(meta) meta.setAttribute('content','#4f5e46');
 
+        updateDurationSummary(doc);
         installNavigationLogic(doc);
         enhanceWorkoutUI(doc);
         applyAvatarImages(doc);
 
         setTimeout(()=>{
+          updateDurationSummary(doc);
           enhanceWorkoutUI(doc);
           applyAvatarImages(doc);
         },0);
         setTimeout(()=>{
+          updateDurationSummary(doc);
           enhanceWorkoutUI(doc);
           applyAvatarImages(doc);
         },250);
