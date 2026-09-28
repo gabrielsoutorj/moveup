@@ -118,7 +118,7 @@
       const prev=doc.getElementById('prevExerciseBtn');
       const next=doc.getElementById('nextExerciseBtn');
       if(prev) prev.disabled=index<=0;
-      if(next) next.disabled=index<0 || index>=EXERCISE_ORDER.length-1;
+      if(next) next.disabled=index<0;
     }
 
     function enhanceWorkoutUI(doc){
