@@ -5,6 +5,11 @@
   const SESSION_HISTORY_KEY='moveup_session_history_v1';
   const INTENSITY_LABELS={light:'Leve',moderate:'Moderado',intense:'Intenso'};
   const INTENSITY_MULTIPLIERS={light:0.75,moderate:1,intense:1.25};
+  const REP_TARGETS={
+    'Sit-Up':20,
+    'Push Ups':25,
+    'Pull-Up / Chin-Up':8
+  };
   const BASE_MET={
     'Lymphatic Hops':5.0,
     'Body Waves':2.5,
@@ -41,10 +46,18 @@
     }catch(_){return {}}
   }
 
-  function calculateKcal(name,intensity,weightKg){
+  function repetitionFactor(name,reps){
+    const target=REP_TARGETS[name];
+    if(!target)return 1;
+    const count=Math.max(1,Number(reps)||target);
+    return Math.max(.7,Math.min(1.3,.7+.3*(count/target)));
+  }
+
+  function calculateKcal(name,intensity,weightKg,reps=null){
     if(!weightKg||!BASE_MET[name]||!INTENSITY_MULTIPLIERS[intensity])return 0;
     const met=BASE_MET[name]*INTENSITY_MULTIPLIERS[intensity];
-    return Math.round((met*3.5*weightKg/200)*10)/10;
+    const factor=repetitionFactor(name,reps);
+    return Math.round((met*3.5*weightKg/200)*factor*10)/10;
   }
 
   function beginSession(){
@@ -57,7 +70,14 @@
       age:Number(profile.age)||null,
       heightCm:Number(profile.heightCm)||null,
       sex:profile.sex||null,
-      exercises:EXERCISES.map(e=>({name:e.name,status:'pending',intensity:null,kcal:0})),
+      exercises:EXERCISES.map(e=>({
+        name:e.name,
+        status:'pending',
+        intensity:null,
+        reps:null,
+        targetReps:REP_TARGETS[e.name]||null,
+        kcal:0
+      })),
       totalKcal:0,
       saved:false
     };
@@ -75,13 +95,23 @@
     return ensureSession().exercises.find(x=>x.name===name);
   }
 
-  function setPerformed(name,intensity='moderate'){
+  function recalcTotal(){
+    activeSession.totalKcal=Math.round(activeSession.exercises.reduce((sum,x)=>sum+(Number(x.kcal)||0),0)*10)/10;
+  }
+
+  function setPerformed(name,intensity='moderate',repsOverride=null){
     const record=exerciseRecord(name);
     if(!record)return;
     record.status='done';
     record.intensity=intensity;
-    record.kcal=calculateKcal(name,intensity,activeSession.weightKg);
-    activeSession.totalKcal=Math.round(activeSession.exercises.reduce((sum,x)=>sum+(Number(x.kcal)||0),0)*10)/10;
+    if(REP_TARGETS[name]){
+      const fallback=record.reps||REP_TARGETS[name];
+      record.reps=Math.max(1,Math.round(Number(repsOverride??fallback)||REP_TARGETS[name]));
+    }else{
+      record.reps=null;
+    }
+    record.kcal=calculateKcal(name,intensity,activeSession.weightKg,record.reps);
+    recalcTotal();
   }
 
   function setSkipped(name){
@@ -89,8 +119,9 @@
     if(!record)return;
     record.status='skipped';
     record.intensity=null;
+    record.reps=REP_TARGETS[name]?0:null;
     record.kcal=0;
-    activeSession.totalKcal=Math.round(activeSession.exercises.reduce((sum,x)=>sum+(Number(x.kcal)||0),0)*10)/10;
+    recalcTotal();
   }
 
   function clearExercise(name){
@@ -98,8 +129,9 @@
     if(!record)return;
     record.status='pending';
     record.intensity=null;
+    record.reps=null;
     record.kcal=0;
-    activeSession.totalKcal=Math.round(activeSession.exercises.reduce((sum,x)=>sum+(Number(x.kcal)||0),0)*10)/10;
+    recalcTotal();
   }
 
   function formatKcal(value){
@@ -122,14 +154,43 @@
         <button type="button" data-intensity="moderate">Moderado</button>
         <button type="button" data-intensity="intense">Intenso</button>
       </div>
+      <div id="moveupRepControl" class="moveup-rep-control">
+        <span class="moveup-rep-label">Repetições</span>
+        <div class="moveup-rep-stepper">
+          <button type="button" id="moveupRepMinus" aria-label="Diminuir repetições">−</button>
+          <input id="moveupRepValue" type="number" min="1" max="200" inputmode="numeric" aria-label="Número de repetições" />
+          <button type="button" id="moveupRepPlus" aria-label="Aumentar repetições">+</button>
+        </div>
+      </div>
       <div class="moveup-intensity-kcal" id="moveupIntensityKcal"></div>`;
     timerArea.parentElement.insertBefore(panel,timerArea);
+
     panel.querySelectorAll('[data-intensity]').forEach(btn=>btn.addEventListener('click',()=>{
       const name=panel.dataset.exercise;
       if(!name)return;
-      setPerformed(name,btn.dataset.intensity);
+      const record=exerciseRecord(name);
+      setPerformed(name,btn.dataset.intensity,record?.reps);
       updateRatingPanel(name);
     }));
+
+    const updateReps=delta=>{
+      const name=panel.dataset.exercise;
+      if(!name||!REP_TARGETS[name])return;
+      const record=exerciseRecord(name);
+      const current=Math.max(1,Number(record?.reps)||REP_TARGETS[name]);
+      setPerformed(name,record?.intensity||'moderate',Math.max(1,current+delta));
+      updateRatingPanel(name);
+    };
+    document.getElementById('moveupRepMinus').addEventListener('click',()=>updateReps(-1));
+    document.getElementById('moveupRepPlus').addEventListener('click',()=>updateReps(1));
+    document.getElementById('moveupRepValue').addEventListener('change',e=>{
+      const name=panel.dataset.exercise;
+      if(!name||!REP_TARGETS[name])return;
+      const record=exerciseRecord(name);
+      const reps=Math.max(1,Math.min(200,Math.round(Number(e.target.value)||REP_TARGETS[name])));
+      setPerformed(name,record?.intensity||'moderate',reps);
+      updateRatingPanel(name);
+    });
     return panel;
   }
 
@@ -142,12 +203,25 @@
     panel.classList.add('show');
     document.getElementById('moveupIntensityQuestion').textContent=`Como foi ${name}?`;
     panel.querySelectorAll('[data-intensity]').forEach(btn=>btn.classList.toggle('selected',btn.dataset.intensity===record.intensity));
-    document.getElementById('moveupIntensityKcal').textContent=record.status==='skipped'?'Pulado · 0 kcal':`Estimativa deste exercício: ~${formatKcal(record.kcal)} kcal`;
+
+    const repControl=document.getElementById('moveupRepControl');
+    const repValue=document.getElementById('moveupRepValue');
+    if(REP_TARGETS[name]&&record.status!=='skipped'){
+      repControl.classList.add('show');
+      repValue.value=record.reps||REP_TARGETS[name];
+    }else{
+      repControl.classList.remove('show');
+    }
+
+    const details=record.status==='skipped'
+      ?'Pulado · 0 kcal'
+      :`${record.reps?`${record.reps} reps · `:''}~${formatKcal(record.kcal)} kcal estimadas`;
+    document.getElementById('moveupIntensityKcal').textContent=details;
   }
 
   function showRatingPanel(name){
     const record=exerciseRecord(name);
-    if(record&&record.status==='pending')setPerformed(name,'moderate');
+    if(record&&record.status==='pending')setPerformed(name,'moderate',REP_TARGETS[name]||null);
     updateRatingPanel(name);
   }
 
@@ -161,10 +235,11 @@
       if(item.status==='pending'){
         item.status='skipped';
         item.intensity=null;
+        item.reps=REP_TARGETS[item.name]?0:null;
         item.kcal=0;
       }
     });
-    session.totalKcal=Math.round(session.exercises.reduce((sum,x)=>sum+(Number(x.kcal)||0),0)*10)/10;
+    recalcTotal();
     session.completedAt=new Date().toISOString();
     return session;
   }
@@ -208,12 +283,13 @@
     summary.className='moveup-session-summary';
     const rows=session.exercises.map(item=>{
       const status=item.status==='skipped'?'Pulado':INTENSITY_LABELS[item.intensity]||'Moderado';
-      return `<div class="moveup-summary-row ${item.status==='skipped'?'skipped':''}"><span class="moveup-summary-name">${item.name}</span><span class="moveup-summary-intensity">${status}</span><strong>${item.status==='skipped'?'0':`~${formatKcal(item.kcal)}`} kcal</strong></div>`;
+      const detail=item.status==='skipped'?status:`${status}${item.reps?` · ${item.reps} reps`:''}`;
+      return `<div class="moveup-summary-row ${item.status==='skipped'?'skipped':''}"><span class="moveup-summary-name">${item.name}</span><span class="moveup-summary-intensity">${detail}</span><strong>${item.status==='skipped'?'0':`~${formatKcal(item.kcal)}`} kcal</strong></div>`;
     }).join('');
     summary.innerHTML=`
       <div class="moveup-summary-head">
         <div><span>Calorias estimadas</span><strong>~${formatKcal(session.totalKcal)} kcal</strong></div>
-        <small>Estimativa baseada em peso, duração e intensidade informada.</small>
+        <small>Estimativa baseada em peso, duração, intensidade e, quando aplicável, número de repetições.</small>
       </div>
       <div class="moveup-summary-list">${rows}</div>`;
     complete.insertBefore(summary,actions);
@@ -236,7 +312,7 @@
       const ratingName=currentRatingExercise();
       if(finalRatingRest){
         $('phaseLabel').textContent='Descanso final';
-        $('metaValue').textContent='Classifique o último exercício';
+        $('metaValue').textContent='Registre o último exercício';
       }
       if(ratingName)showRatingPanel(ratingName);
     }else{
@@ -248,7 +324,10 @@
   advancePhase=function(previousDeadline){
     if(phase==='exercise'){
       const name=EXERCISES[current]?.name;
-      if(name)setPerformed(name,exerciseRecord(name)?.intensity||'moderate');
+      if(name){
+        const record=exerciseRecord(name);
+        setPerformed(name,record?.intensity||'moderate',record?.reps||REP_TARGETS[name]||null);
+      }
       if(current===EXERCISES.length-1){
         finalRatingRest=true;
         lastBeepSecond=null;
