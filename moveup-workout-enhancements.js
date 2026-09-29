@@ -11,8 +11,8 @@
     'Pull-Up / Chin-Up':8
   };
   const BASE_MET={
-    'Lymphatic Hops':5.0,
-    'Body Waves':2.5,
+    'Lymphatic Hops':4.0,
+    'Body Waves':5.5,
     'Trunk Twist':3.0,
     'Arm Swings':2.8,
     'Jumping Jacks':8.0,
@@ -120,16 +120,6 @@
     record.status='skipped';
     record.intensity=null;
     record.reps=REP_TARGETS[name]?0:null;
-    record.kcal=0;
-    recalcTotal();
-  }
-
-  function clearExercise(name){
-    const record=exerciseRecord(name);
-    if(!record)return;
-    record.status='pending';
-    record.intensity=null;
-    record.reps=null;
     record.kcal=0;
     recalcTotal();
   }
@@ -365,7 +355,8 @@
       ensureSession();
 
       if(d>0&&current===EXERCISES.length-1){
-        if(phase==='exercise'||phase==='countdown'||phase==='paused'){
+        const record=exerciseRecord(EXERCISES[current].name);
+        if((phase==='exercise'||phase==='countdown'||phase==='paused')&&record?.status==='pending'){
           setSkipped(EXERCISES[current].name);
         }
         finalRatingRest=false;
@@ -377,12 +368,11 @@
 
       if(d>0){
         const name=EXERCISES[current]?.name;
-        if(name)setSkipped(name);
-      }else if(d<0){
-        const target=Math.max(0,current-1);
-        const name=EXERCISES[target]?.name;
-        if(name)clearExercise(name);
+        const record=name?exerciseRecord(name):null;
+        if(name&&record?.status==='pending')setSkipped(name);
       }
+
+      // Voltar serve apenas para navegação/revisão. Nunca apaga um exercício já concluído.
       finalRatingRest=false;
       hideRatingPanel();
       return originalJump(delta);
