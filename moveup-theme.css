@@ -63,7 +63,7 @@ html,body{background:#fff!important;color:var(--ink)}
   text-align:center !important;
 }
 
-/* --- Intensity selection during rest --- */
+/* --- Intensity and repetition selection during rest --- */
 .moveup-intensity-panel{
   display:none;
   width:min(92vw,600px);
@@ -79,6 +79,13 @@ html,body{background:#fff!important;color:var(--ink)}
 .moveup-intensity-options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .moveup-intensity-options button{height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:800;cursor:pointer}
 .moveup-intensity-options button.selected{background:#dce7d5;color:#3f4b39;border-color:#dce7d5}
+.moveup-rep-control{display:none;align-items:center;justify-content:center;gap:10px;margin-top:8px}
+.moveup-rep-control.show{display:flex}
+.moveup-rep-label{color:#eef3ea;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.moveup-rep-stepper{display:grid;grid-template-columns:34px 54px 34px;gap:5px;align-items:center}
+.moveup-rep-stepper button{height:32px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:18px;font-weight:900;cursor:pointer;padding:0}
+.moveup-rep-stepper input{height:32px;width:54px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:#fff;color:#3f4b39;text-align:center;font-size:14px;font-weight:900;padding:0 3px;outline:none;-moz-appearance:textfield}
+.moveup-rep-stepper input::-webkit-inner-spin-button,.moveup-rep-stepper input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .moveup-intensity-kcal{margin-top:6px;color:#e8efe4;font-size:10px;font-weight:700}
 
 /* --- Footer controls: previous / pause / restart / next --- */
@@ -122,7 +129,7 @@ html,body{background:#fff!important;color:var(--ink)}
 .moveup-summary-head strong{font-size:24px;color:#4f5e46;white-space:nowrap}
 .moveup-summary-head small{display:block;margin-top:5px;color:#999;font-size:10px;line-height:1.35}
 .moveup-summary-list{padding:5px 0}
-.moveup-summary-row{display:grid;grid-template-columns:minmax(0,1fr) 86px 76px;gap:8px;align-items:center;padding:8px 14px;border-bottom:1px solid #f1f2ef;font-size:11px}
+.moveup-summary-row{display:grid;grid-template-columns:minmax(0,1fr) 116px 76px;gap:8px;align-items:center;padding:8px 14px;border-bottom:1px solid #f1f2ef;font-size:11px}
 .moveup-summary-row:last-child{border-bottom:0}
 .moveup-summary-name{font-weight:750;color:#252525;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .moveup-summary-intensity{color:#65745a;font-weight:800;text-align:center}
@@ -136,11 +143,16 @@ html,body{background:#fff!important;color:var(--ink)}
   .moveup-intensity-panel{padding:7px 8px 6px;margin-bottom:6px}
   .moveup-intensity-question{font-size:11px;margin-bottom:5px}
   .moveup-intensity-options button{height:31px;font-size:11px}
+  .moveup-rep-control{gap:7px;margin-top:6px}
+  .moveup-rep-label{font-size:9px}
+  .moveup-rep-stepper{grid-template-columns:31px 50px 31px;gap:4px}
+  .moveup-rep-stepper button,.moveup-rep-stepper input{height:29px}
+  .moveup-rep-stepper input{width:50px;font-size:13px}
   .moveup-intensity-kcal{font-size:9px;margin-top:4px}
   .controls #pauseBtn,.controls #restartBtn{font-size:13px !important;padding:11px 5px !important}
   .moveup-nav{flex-basis:42px !important;width:42px !important;height:42px !important;min-width:42px !important}
   .moveup-summary-head{padding:14px}
   .moveup-summary-head strong{font-size:21px}
-  .moveup-summary-row{grid-template-columns:minmax(0,1fr) 72px 64px;padding:7px 10px;gap:5px;font-size:10px}
-  .moveup-summary-row strong{font-size:10px}
+  .moveup-summary-row{grid-template-columns:minmax(0,1fr) 96px 62px;padding:7px 9px;gap:4px;font-size:9px}
+  .moveup-summary-row strong{font-size:9px}
 }
