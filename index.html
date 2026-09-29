@@ -100,7 +100,7 @@
     .history-session-title{font-weight:850;font-size:13px}
     .history-session-meta{color:var(--muted);font-size:10px;margin-top:2px}
     .history-session-kcal{color:var(--accent-dark);font-size:14px;font-weight:900;white-space:nowrap}
-    .history-row{display:grid;grid-template-columns:minmax(0,1fr) 78px 65px;gap:6px;align-items:center;padding:7px 10px;border-top:1px solid #f0f0ee;font-size:10px}
+    .history-row{display:grid;grid-template-columns:minmax(0,1fr) 116px 65px;gap:6px;align-items:center;padding:7px 10px;border-top:1px solid #f0f0ee;font-size:10px}
     .history-row:first-child{border-top:0}
     .history-row-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .history-row-intensity{text-align:center;color:var(--accent-dark);font-weight:800}
@@ -110,60 +110,69 @@
 
     @media(max-width:640px){
       body{min-height:100dvh;overflow-x:hidden}
-      .page{padding:12px 12px 16px}
-      .brand{margin-bottom:10px}
-      .brand h1{font-size:38px;line-height:.92}
-      .brand p{margin-top:5px;font-size:12px}
-      .card{padding:13px;border-radius:18px}
-      .welcome{grid-template-columns:72px 1fr;gap:11px}
-      .welcome-avatar{width:72px;height:88px;border-radius:15px}
-      .hello{font-size:10px;letter-spacing:.1em;margin-bottom:2px}
-      .welcome h2{font-size:25px;margin-bottom:4px}
-      .profile-sub{font-size:12px}
-      .profile-data{grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
-      .data-box{padding:7px 5px;border-radius:12px;text-align:center}
-      .data-box strong{font-size:14px;line-height:1.1}
-      .data-box span{font-size:8px;margin-top:2px}
-      .calendar-block{margin-top:10px;padding-top:9px}
-      .calendar-head{margin-bottom:6px;gap:6px}
-      .calendar-title{font-size:14px;white-space:nowrap}
-      .calendar-nav{gap:4px}
-      .calendar-month{min-width:108px;font-size:11px}
-      .month-btn{width:28px;height:28px;border-radius:9px;font-size:15px}
-      .weekdays,.calendar-grid{gap:1px}
-      .weekdays{margin-bottom:1px}
-      .weekday{font-size:8px}
-      .calendar-day{min-height:34px;border-radius:9px;gap:1px}
-      .day-number{font-size:9px;line-height:1}
-      .workout-badge{width:21px;height:21px;font-size:8px;box-shadow:none}
-      .calendar-legend{margin:5px 0 0;font-size:9px;line-height:1.2}
-      .home-actions{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:6px;margin-top:10px}
-      .primary,.secondary{height:42px;border-radius:12px;padding:0 9px;font-size:12px}
-      .saved-note{font-size:9px;margin:5px 4px 0}
+      .page{padding:18px 14px 24px}
+      .brand{margin-bottom:14px}
+      .brand h1{font-size:46px;line-height:.94}
+      .brand p{margin-top:6px;font-size:13px}
+      .card{padding:16px;border-radius:20px}
+      .welcome{grid-template-columns:90px 1fr;gap:14px}
+      .welcome-avatar{width:90px;height:110px;border-radius:17px}
+      .hello{font-size:11px;letter-spacing:.11em;margin-bottom:3px}
+      .welcome h2{font-size:29px;margin-bottom:5px}
+      .profile-sub{font-size:13px}
+      .profile-data{grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px}
+      .data-box{padding:10px 7px;border-radius:13px;text-align:center}
+      .data-box strong{font-size:16px;line-height:1.1}
+      .data-box span{font-size:9px;margin-top:3px}
+      .calendar-block{margin-top:14px;padding-top:12px}
+      .calendar-head{margin-bottom:8px;gap:7px}
+      .calendar-title{font-size:15px;white-space:nowrap}
+      .calendar-nav{gap:5px}
+      .calendar-month{min-width:116px;font-size:12px}
+      .month-btn{width:31px;height:31px;border-radius:9px;font-size:16px}
+      .weekdays,.calendar-grid{gap:2px}
+      .weekdays{margin-bottom:2px}
+      .weekday{font-size:9px}
+      .calendar-day{min-height:39px;border-radius:10px;gap:2px}
+      .day-number{font-size:10px;line-height:1}
+      .workout-badge{width:24px;height:24px;font-size:9px;box-shadow:none}
+      .calendar-legend{margin:7px 0 0;font-size:9.5px;line-height:1.25}
+      .home-actions{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:7px;margin-top:14px}
+      .primary,.secondary{height:46px;border-radius:13px;padding:0 10px;font-size:13px}
+      .saved-note{font-size:10px;margin:7px 4px 0}
       .grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}
       .history-backdrop{padding:8px}
       .history-sheet{max-height:91dvh;border-radius:20px;padding:14px}
       .history-sheet-head h3{font-size:20px}
-      .history-row{grid-template-columns:minmax(0,1fr) 66px 58px;padding:6px 7px;font-size:9px}
+      .history-row{grid-template-columns:minmax(0,1fr) 96px 58px;padding:6px 7px;font-size:9px}
     }
 
     @media(max-width:640px) and (max-height:720px){
-      .page{padding-top:8px;padding-bottom:8px}
+      .page{padding:8px 12px}
       .brand{margin-bottom:7px}
       .brand h1{font-size:34px}
-      .brand p{font-size:11px}
+      .brand p{font-size:11px;margin-top:4px}
       .card{padding:10px}
       .welcome{grid-template-columns:62px 1fr;gap:9px}
       .welcome-avatar{width:62px;height:76px}
+      .hello{font-size:9px}
       .welcome h2{font-size:22px}
-      .profile-data{margin-top:7px}
+      .profile-sub{font-size:11px}
+      .profile-data{margin-top:7px;gap:5px}
       .data-box{padding:5px 4px}
+      .data-box strong{font-size:14px}
+      .data-box span{font-size:8px}
       .calendar-block{margin-top:7px;padding-top:6px}
       .calendar-head{margin-bottom:3px}
+      .calendar-title{font-size:13px}
+      .calendar-month{min-width:105px;font-size:10px}
+      .month-btn{width:27px;height:27px}
       .calendar-day{min-height:30px}
+      .day-number{font-size:9px}
+      .workout-badge{width:21px;height:21px;font-size:8px}
       .calendar-legend{display:none}
       .home-actions{margin-top:7px}
-      .primary,.secondary{height:38px}
+      .primary,.secondary{height:38px;font-size:11px}
       .saved-note{display:none}
     }
   </style>
@@ -348,7 +357,8 @@
       const html=sessions.map((session,index)=>{
         const rows=(session.exercises||[]).map(item=>{
           const intensity=item.status==='skipped'?'Pulado':INTENSITY_LABELS[item.intensity]||'Moderado';
-          return `<div class="history-row ${item.status==='skipped'?'skipped':''}"><span class="history-row-name">${item.name}</span><span class="history-row-intensity">${intensity}</span><span class="history-row-kcal">${item.status==='skipped'?'0':`~${formatKcal(item.kcal)}`} kcal</span></div>`;
+          const detail=item.status==='skipped'?intensity:`${intensity}${item.reps?` · ${item.reps} reps`:''}`;
+          return `<div class="history-row ${item.status==='skipped'?'skipped':''}"><span class="history-row-name">${item.name}</span><span class="history-row-intensity">${detail}</span><span class="history-row-kcal">${item.status==='skipped'?'0':`~${formatKcal(item.kcal)}`} kcal</span></div>`;
         }).join('');
         return `<section class="history-session"><div class="history-session-head"><div><div class="history-session-title">Sequência ${index+1}</div><div class="history-session-meta">${formatTime(session.completedAt)} · ${session.weightKg||'—'} kg</div></div><div class="history-session-kcal">~${formatKcal(session.totalKcal)} kcal</div></div><div>${rows}</div></section>`;
       }).join('');
