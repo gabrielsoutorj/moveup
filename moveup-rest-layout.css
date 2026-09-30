@@ -1,0 +1,205 @@
+/* MoveUp — balanced mobile rest layout */
+@media(max-width:640px){
+  html:has(.moveup-intensity-panel.show),
+  body:has(.moveup-intensity-panel.show){
+    height:100% !important;
+    overflow:hidden !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show){
+    height:100dvh !important;
+    min-height:100dvh !important;
+    max-height:100dvh !important;
+    overflow:hidden !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:flex-start !important;
+    padding:10px 12px 10px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .phase{
+    margin:6px 0 2px !important;
+    font-size:10px !important;
+    line-height:1.1 !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) #exerciseName{
+    margin:0 0 8px !important;
+    font-size:clamp(28px,8.2vw,36px) !important;
+    line-height:1 !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .visual-wrap{
+    width:min(90vw,500px) !important;
+    height:clamp(165px,27dvh,205px) !important;
+    min-height:0 !important;
+    max-height:27dvh !important;
+    margin:6px auto 0 !important;
+    padding:9px !important;
+    border-radius:22px !important;
+    transform:none !important;
+    flex:0 0 auto !important;
+  }
+
+  /* Everything below the image becomes one controlled vertical stack. */
+  .workout:has(.moveup-intensity-panel.show) .visual-wrap + *{
+    width:100% !important;
+    flex:1 1 auto !important;
+    min-height:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:flex-start !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-instruction{
+    width:min(92vw,600px) !important;
+    min-height:0 !important;
+    margin:9px auto 6px !important;
+    padding:0 8px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-instruction .desc{
+    font-size:11px !important;
+    line-height:1.25 !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-intensity-panel{
+    width:min(92vw,600px) !important;
+    margin:0 auto 6px !important;
+    padding:7px 8px 6px !important;
+    border-radius:14px !important;
+    flex:0 0 auto !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-intensity-question{
+    margin-bottom:5px !important;
+    font-size:10.5px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-intensity-options{
+    gap:5px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-intensity-options button{
+    height:30px !important;
+    border-radius:9px !important;
+    font-size:10.5px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-rep-control{
+    gap:7px !important;
+    margin-top:5px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-rep-label{
+    font-size:8.5px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-rep-stepper{
+    grid-template-columns:29px 48px 29px !important;
+    gap:4px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-rep-stepper button,
+  .workout:has(.moveup-intensity-panel.show) .moveup-rep-stepper input{
+    height:28px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-rep-stepper input{
+    width:48px !important;
+    font-size:12px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-intensity-kcal{
+    margin-top:4px !important;
+    font-size:8.5px !important;
+    line-height:1.1 !important;
+  }
+
+  /* Push the timer/controls to the bottom instead of spreading empty space between all blocks. */
+  .workout:has(.moveup-intensity-panel.show) .timer-area{
+    width:min(92vw,600px) !important;
+    min-height:0 !important;
+    margin:auto auto 0 !important;
+    padding:6px 0 0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:12px !important;
+    flex:0 0 auto !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .ring{
+    width:80px !important;
+    height:80px !important;
+    min-width:80px !important;
+    min-height:80px !important;
+    flex:0 0 80px !important;
+    font-size:29px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .ring::before{
+    inset:8px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .meta{
+    max-width:210px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .meta .label{
+    margin-bottom:3px !important;
+    font-size:9px !important;
+    line-height:1 !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .meta .desc{
+    font-size:16px !important;
+    line-height:1.08 !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .progress{
+    display:none !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .controls{
+    width:min(94vw,620px) !important;
+    margin:8px auto 0 !important;
+    padding:0 !important;
+    gap:6px !important;
+    flex:0 0 auto !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .controls #pauseBtn,
+  .workout:has(.moveup-intensity-panel.show) .controls #restartBtn{
+    height:42px !important;
+    padding:7px 5px !important;
+    font-size:11px !important;
+  }
+
+  .workout:has(.moveup-intensity-panel.show) .moveup-nav{
+    width:42px !important;
+    height:42px !important;
+    min-width:42px !important;
+    flex-basis:42px !important;
+  }
+}
+
+@media(max-width:640px) and (max-height:560px){
+  .workout:has(.moveup-intensity-panel.show) .visual-wrap{
+    height:22dvh !important;
+    max-height:22dvh !important;
+    min-height:125px !important;
+  }
+  .workout:has(.moveup-intensity-panel.show) .moveup-instruction{
+    margin-top:5px !important;
+    margin-bottom:4px !important;
+  }
+  .workout:has(.moveup-intensity-panel.show) .ring{
+    width:70px !important;
+    height:70px !important;
+    min-width:70px !important;
+    min-height:70px !important;
+    flex-basis:70px !important;
+    font-size:25px !important;
+  }
+}
