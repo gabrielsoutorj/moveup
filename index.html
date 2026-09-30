@@ -21,16 +21,16 @@
 
     .profile-home{display:none}
     .profile-home.show{display:block}
-    .welcome{display:grid;grid-template-columns:132px 1fr;gap:22px;align-items:center}
+    .welcome{display:grid;grid-template-columns:132px minmax(0,1fr) auto;gap:18px;align-items:center}
     .welcome-avatar{width:132px;height:164px;border-radius:22px;overflow:hidden;background:var(--soft);border:1px solid var(--line)}
     .welcome-avatar img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
     .hello{font-size:13px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:5px}
     .welcome h2{font-size:clamp(30px,6vw,42px);line-height:1;margin:0 0 8px;letter-spacing:-.04em}
     .profile-sub{color:var(--muted);font-size:14px;margin:0}
-    .profile-data{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
-    .data-box{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:14px 15px}
-    .data-box strong{display:block;font-size:18px;letter-spacing:-.02em}
-    .data-box span{display:block;color:var(--muted);font-size:11px;margin-top:3px;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
+    .profile-data{display:grid;grid-template-columns:1fr;gap:6px;margin-top:0;min-width:118px}
+    .data-box{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+    .data-box strong{display:block;font-size:15px;letter-spacing:-.02em}
+    .data-box span{display:block;color:var(--muted);font-size:8px;margin-top:1px;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
 
     .calendar-block{margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
     .calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
@@ -129,15 +129,15 @@
       body.home-mode .brand p{margin-top:5px;font-size:12px}
       body.home-mode .card{flex:1 1 auto;min-height:0;padding:14px;border-radius:20px;overflow:hidden}
       body.home-mode .profile-home.show{height:100%;display:flex;flex-direction:column;min-height:0}
-      body.home-mode .welcome{flex:0 0 auto;grid-template-columns:84px 1fr;gap:12px}
+      body.home-mode .welcome{flex:0 0 auto;grid-template-columns:84px minmax(0,1fr) 88px;gap:10px}
       body.home-mode .welcome-avatar{width:84px;height:102px;border-radius:16px}
       body.home-mode .hello{font-size:10px;letter-spacing:.1em;margin-bottom:3px}
-      body.home-mode .welcome h2{font-size:28px;margin-bottom:4px}
+      body.home-mode .welcome h2{font-size:25px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       body.home-mode .profile-sub{font-size:12px}
-      body.home-mode .profile-data{flex:0 0 auto;gap:7px;margin-top:10px}
-      body.home-mode .data-box{padding:8px 5px;border-radius:12px;text-align:center}
-      body.home-mode .data-box strong{font-size:16px;line-height:1.05}
-      body.home-mode .data-box span{font-size:8px;margin-top:2px}
+      body.home-mode .profile-data{flex:0 0 auto;display:grid;grid-template-columns:1fr;gap:4px;margin-top:0;min-width:0}
+      body.home-mode .data-box{padding:5px 6px;border-radius:9px;text-align:center}
+      body.home-mode .data-box strong{font-size:12px;line-height:1.05}
+      body.home-mode .data-box span{font-size:6.5px;margin-top:1px}
       body.home-mode .calendar-block{flex:1 1 auto;min-height:0;margin-top:10px;padding-top:9px;display:flex;flex-direction:column}
       body.home-mode .calendar-head{flex:0 0 auto;margin-bottom:5px;gap:5px}
       body.home-mode .calendar-title{font-size:15px;white-space:nowrap}
@@ -185,17 +185,12 @@
         <div class="welcome">
           <div class="welcome-avatar"><img id="homeAvatar" alt="Seu avatar" /></div>
           <div>
-            <div class="hello">Seu treino está pronto</div>
-            <h2 id="welcomeName">Olá!</h2>
+            <h2 id="welcomeName">Nome</h2>
             <p id="profileSub" class="profile-sub"></p>
           </div>
         </div>
 
-        <div class="profile-data">
-          <div class="data-box"><strong id="homeAge">—</strong><span>Idade</span></div>
-          <div class="data-box"><strong id="homeHeight">—</strong><span>Altura</span></div>
-          <div class="data-box"><strong id="homeWeight">—</strong><span>Peso</span></div>
-        </div>
+
 
         <div class="calendar-block" aria-label="Histórico de treinos">
           <div class="calendar-head">
@@ -507,8 +502,8 @@
       formView.classList.add('hidden');
       profileHome.classList.add('show');
       document.getElementById('homeAvatar').src=profile.avatarBase||avatarFile(profile.sex,profile.avatar);
-      document.getElementById('welcomeName').textContent=`Olá, ${profile.name}`;
-      document.getElementById('profileSub').textContent=`${sexLabel(profile.sex)} · ${colorLabels[profile.avatar]||profile.avatar}`;
+      document.getElementById('welcomeName').textContent=profile.name;
+      document.getElementById('profileSub').textContent=sexLabel(profile.sex);
       document.getElementById('homeAge').textContent=`${profile.age} anos`;
       document.getElementById('homeHeight').textContent=`${profile.heightCm} cm`;
       document.getElementById('homeWeight').textContent=`${profile.weightKg} kg`;
