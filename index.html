@@ -50,6 +50,19 @@
     .day-number{font-size:12px;font-weight:750;color:#777}
     .workout-badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:11px;font-weight:900;line-height:1;box-shadow:0 4px 10px rgba(79,94,70,.18)}
     .calendar-legend{margin:12px 0 0;color:#92928e;font-size:11px;text-align:center;line-height:1.4}
+    .water-pct{font-size:8px;font-weight:900;color:#4d7890;line-height:1}
+    .calendar-day.has-data{cursor:pointer;transition:.15s ease}
+    .calendar-day.has-data:hover{background:var(--accent-soft)}
+    .hydration{margin-top:14px;padding:14px 15px;border:1px solid var(--line);border-radius:17px;background:#fbfcfc}
+    .hydration-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:9px}
+    .hydration-title{font-size:14px;font-weight:900;letter-spacing:-.01em}
+    .hydration-value{font-size:12px;font-weight:850;color:#4d7890;white-space:nowrap}
+    .water-track{height:10px;border-radius:999px;background:#e7eef1;overflow:hidden}
+    .water-fill{height:100%;width:0;border-radius:999px;background:#5f91aa;transition:width .25s ease}
+    .water-meta{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:var(--muted);font-size:9px}
+    .water-buttons{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:6px;margin-top:10px}
+    .water-btn,.water-undo{height:34px;border:1px solid #d7e1e5;border-radius:10px;background:#fff;color:#426f86;font-size:11px;font-weight:850;cursor:pointer;padding:0 9px}
+    .water-btn:hover,.water-undo:hover{background:#edf5f8}.water-undo{color:#777;border-color:var(--line)}
 
     .home-actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:22px}
     .primary{height:54px;border:0;border-radius:15px;background:var(--accent);color:#fff;font-weight:850;cursor:pointer;transition:.18s ease;padding:0 22px}
@@ -137,7 +150,11 @@
       body.home-mode .calendar-day{min-height:0;border-radius:9px;gap:1px}
       body.home-mode .day-number{font-size:10px;line-height:1}
       body.home-mode .workout-badge{width:23px;height:23px;font-size:8.5px;box-shadow:none}
-      body.home-mode .calendar-legend{flex:0 0 auto;margin:4px 0 0;font-size:8.5px;line-height:1.15}
+      body.home-mode .calendar-legend{flex:0 0 auto;margin:3px 0 0;font-size:8px;line-height:1.1}
+      body.home-mode .hydration{flex:0 0 auto;margin-top:6px;padding:8px 9px;border-radius:12px}
+      body.home-mode .hydration-head{margin-bottom:5px}.hydration-title{font-size:12px}.hydration-value{font-size:10px}
+      body.home-mode .water-track{height:7px}.water-meta{margin-top:3px;font-size:7.5px}.water-buttons{margin-top:5px;gap:4px}
+      body.home-mode .water-btn,body.home-mode .water-undo{height:28px;border-radius:8px;font-size:9px;padding:0 5px}
       body.home-mode .home-actions{flex:0 0 auto;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:7px;margin-top:7px}
       body.home-mode .primary,body.home-mode .secondary{height:44px;border-radius:12px;padding:0 8px;font-size:12.5px}
       body.home-mode .saved-note{flex:0 0 auto;font-size:8.5px;margin:4px 2px 0;line-height:1.1}
@@ -193,7 +210,19 @@
             <div class="weekday">Dom</div><div class="weekday">Seg</div><div class="weekday">Ter</div><div class="weekday">Qua</div><div class="weekday">Qui</div><div class="weekday">Sex</div><div class="weekday">Sáb</div>
           </div>
           <div id="calendarGrid" class="calendar-grid"></div>
-          <p class="calendar-legend">Toque em um dia marcado para ver as sequências e calorias estimadas.</p>
+          <p class="calendar-legend">Cada dia mostra sets concluídos e o percentual da meta de água atingido.</p>
+        </div>
+
+        <div class="hydration" aria-label="Consumo de água de hoje">
+          <div class="hydration-head"><div class="hydration-title">💧 Água hoje</div><div id="waterValue" class="hydration-value">0 / 0 ml</div></div>
+          <div class="water-track"><div id="waterFill" class="water-fill"></div></div>
+          <div class="water-meta"><span id="waterPercent">0% da meta</span><span id="waterGoalInfo"></span></div>
+          <div class="water-buttons">
+            <button class="water-btn" type="button" data-water="200">+200 ml</button>
+            <button class="water-btn" type="button" data-water="300">+300 ml</button>
+            <button class="water-btn" type="button" data-water="500">+500 ml</button>
+            <button id="waterUndo" class="water-undo" type="button" aria-label="Desfazer último registro de água">↶</button>
+          </div>
         </div>
 
         <div class="home-actions">
@@ -269,6 +298,7 @@
     const PROFILE_KEY='moveup_profile_v1';
     const HISTORY_KEY='morningRoutineHistory';
     const SESSION_HISTORY_KEY='moveup_session_history_v1';
+    const WATER_KEY='moveup_water_history_v1';
     const INTENSITY_LABELS={light:'Leve',moderate:'Moderado',intense:'Intenso'};
     const colors=[['Brown','Castanho'],['Blond','Loiro'],['Red','Ruivo'],['Black','Negro']];
     const colorLabels=Object.fromEntries(colors);
@@ -304,6 +334,39 @@
         const h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}');
         return h&&typeof h==='object'?h:{};
       }catch(_){return {}}
+    }
+
+    function getWaterHistory(){
+      try{const h=JSON.parse(localStorage.getItem(WATER_KEY)||'{}');return h&&typeof h==='object'?h:{}}catch(_){return {}}
+    }
+
+    function saveWaterHistory(h){localStorage.setItem(WATER_KEY,JSON.stringify(h))}
+    function todayKey(){const d=new Date();return calendarDateKey(d.getFullYear(),d.getMonth(),d.getDate())}
+    function waterMlPerKg(age){age=Number(age)||0;if(age<=17)return 40;if(age<=55)return 35;if(age<=65)return 30;return 25}
+    function waterGoalFor(key){
+      const p=getSavedProfile(); if(!p)return 0;
+      const sets=Number(getWorkoutHistory()[key]||0);
+      return Math.round((Number(p.weightKg)||0)*waterMlPerKg(p.age)+sets*500);
+    }
+    function waterConsumedFor(key){const e=getWaterHistory()[key];return e?Number(e.totalMl||0):0}
+    function waterPercentFor(key){const goal=waterGoalFor(key);return goal?Math.round(waterConsumedFor(key)/goal*100):0}
+    function renderHydration(){
+      const key=todayKey(), consumed=waterConsumedFor(key), goal=waterGoalFor(key), pct=goal?Math.round(consumed/goal*100):0;
+      document.getElementById('waterValue').textContent=`${consumed.toLocaleString('pt-BR')} / ${goal.toLocaleString('pt-BR')} ml`;
+      document.getElementById('waterPercent').textContent=`${pct}% da meta`;
+      document.getElementById('waterFill').style.width=`${Math.min(100,pct)}%`;
+      const sets=Number(getWorkoutHistory()[key]||0);
+      document.getElementById('waterGoalInfo').textContent=sets?`meta inclui +${(sets*500).toLocaleString('pt-BR')} ml de treino`:`${waterMlPerKg(currentProfile?.age||0)} ml/kg`;
+      document.getElementById('waterUndo').disabled=!(getWaterHistory()[key]?.entries||[]).length;
+    }
+    function addWater(ml){
+      const h=getWaterHistory(),key=todayKey();
+      if(!h[key])h[key]={totalMl:0,entries:[]};
+      h[key].totalMl=Number(h[key].totalMl||0)+ml;h[key].entries.push({ml,at:new Date().toISOString()});saveWaterHistory(h);renderHydration();renderCalendar();
+    }
+    function undoWater(){
+      const h=getWaterHistory(),key=todayKey(),e=h[key];if(!e||!e.entries?.length)return;
+      const last=e.entries.pop();e.totalMl=Math.max(0,Number(e.totalMl||0)-Number(last.ml||0));if(!e.totalMl&&!e.entries.length)delete h[key];saveWaterHistory(h);renderHydration();renderCalendar();
     }
 
     function getSessionHistory(){
@@ -365,6 +428,7 @@
       const daysInMonth=new Date(year,month+1,0).getDate();
       const rows=Math.ceil((firstWeekday+daysInMonth)/7);
       const history=getWorkoutHistory();
+      const waterHistory=getWaterHistory();
       monthLabel.textContent=new Date(year,month,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
       grid.innerHTML='';
       grid.style.gridTemplateRows=`repeat(${rows},minmax(0,1fr))`;
@@ -376,11 +440,12 @@
       for(let day=1;day<=daysInMonth;day++){
         const key=calendarDateKey(year,month,day);
         const count=Number(history[key]||0);
+        const waterPct=waterHistory[key]?waterPercentFor(key):0;
         const cell=document.createElement('div');
         cell.className='calendar-day';
         const isToday=year===now.getFullYear()&&month===now.getMonth()&&day===now.getDate();
         if(isToday)cell.classList.add('today');
-        cell.setAttribute('aria-label',count?`${day}: ${count} sequência${count>1?'s':''} concluída${count>1?'s':''}`:`${day}: nenhuma sequência concluída`);
+        cell.setAttribute('aria-label',`${day}: ${count} sequência${count!==1?'s':''} concluída${count!==1?'s':''}; ${waterPct}% da meta de água`);
         const number=document.createElement('span');
         number.className='day-number';
         number.textContent=day;
@@ -395,6 +460,7 @@
           cell.addEventListener('click',()=>openDayHistory(key,count));
           cell.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDayHistory(key,count)}});
         }
+        if(waterHistory[key]){const wp=document.createElement('span');wp.className='water-pct';wp.textContent=`${waterPct}% 💧`;cell.appendChild(wp)}
         grid.appendChild(cell);
       }
     }
@@ -447,6 +513,7 @@
       document.getElementById('homeHeight').textContent=`${profile.heightCm} cm`;
       document.getElementById('homeWeight').textContent=`${profile.weightKg} kg`;
       renderCalendar();
+      renderHydration();
     }
 
     function showFormForNewProfile(){
@@ -508,6 +575,8 @@
       if(editingExisting)showHome(profile);else location.href='routine.html';
     });
 
+    document.querySelectorAll('[data-water]').forEach(b=>b.addEventListener('click',()=>addWater(Number(b.dataset.water))));
+    document.getElementById('waterUndo').addEventListener('click',undoWater);
     document.getElementById('goWorkout').addEventListener('click',()=>location.href='routine.html');
     document.getElementById('editProfile').addEventListener('click',()=>{const p=getSavedProfile();if(p)showEdit(p)});
     cancelEdit.addEventListener('click',()=>{const p=getSavedProfile();if(p)showHome(p)});
@@ -516,8 +585,8 @@
     document.getElementById('historyClose').addEventListener('click',closeDayHistory);
     document.getElementById('historyBackdrop').addEventListener('click',e=>{if(e.target.id==='historyBackdrop')closeDayHistory()});
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDayHistory()});
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profileHome.classList.contains('show'))renderCalendar()});
-    window.addEventListener('focus',()=>{if(profileHome.classList.contains('show'))renderCalendar()});
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profileHome.classList.contains('show')){renderCalendar();renderHydration()}});
+    window.addEventListener('focus',()=>{if(profileHome.classList.contains('show')){renderCalendar();renderHydration()}});
 
     const saved=getSavedProfile();
     if(saved&&saved.name&&saved.sex&&saved.avatar)showHome(saved);else showFormForNewProfile();
