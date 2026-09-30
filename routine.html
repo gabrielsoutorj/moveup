@@ -177,6 +177,14 @@
           doc.head.appendChild(link);
         }
 
+        if(!doc.getElementById('moveupRestLayout')){
+          const link=doc.createElement('link');
+          link.id='moveupRestLayout';
+          link.rel='stylesheet';
+          link.href='moveup-rest-layout.css';
+          doc.head.appendChild(link);
+        }
+
         const meta=doc.querySelector('meta[name="theme-color"]');
         if(meta) meta.setAttribute('content','#4f5e46');
 
