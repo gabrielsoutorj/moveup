@@ -109,71 +109,50 @@
     .history-legacy{margin:14px 0 0;padding:11px 12px;border-radius:13px;background:#f8f8f6;color:#777;font-size:11px;line-height:1.4}
 
     @media(max-width:640px){
-      body{min-height:100dvh;overflow-x:hidden}
-      .page{padding:24px 16px 30px}
-      .brand{margin-bottom:18px}
-      .brand h1{font-size:54px;line-height:.94}
-      .brand p{margin-top:7px;font-size:14px}
-      .card{padding:20px;border-radius:22px}
-      .welcome{grid-template-columns:108px 1fr;gap:16px}
-      .welcome-avatar{width:108px;height:132px;border-radius:20px}
-      .hello{font-size:12px;letter-spacing:.11em;margin-bottom:4px}
-      .welcome h2{font-size:34px;margin-bottom:6px}
-      .profile-sub{font-size:14px}
-      .profile-data{grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
-      .data-box{padding:12px 8px;border-radius:14px;text-align:center}
-      .data-box strong{font-size:18px;line-height:1.1}
-      .data-box span{font-size:9px;margin-top:3px}
-      .calendar-block{margin-top:18px;padding-top:16px}
-      .calendar-head{margin-bottom:10px;gap:8px}
-      .calendar-title{font-size:17px;white-space:nowrap}
-      .calendar-nav{gap:6px}
-      .calendar-month{min-width:124px;font-size:13px}
-      .month-btn{width:34px;height:34px;border-radius:10px;font-size:17px}
-      .weekdays,.calendar-grid{gap:3px}
-      .weekdays{margin-bottom:3px}
-      .weekday{font-size:9px}
-      .calendar-day{min-height:44px;border-radius:11px;gap:2px}
-      .day-number{font-size:11px;line-height:1}
-      .workout-badge{width:27px;height:27px;font-size:10px;box-shadow:none}
-      .calendar-legend{margin:8px 0 0;font-size:10px;line-height:1.25}
-      .home-actions{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:8px;margin-top:16px}
-      .primary,.secondary{height:50px;border-radius:14px;padding:0 11px;font-size:14px}
-      .saved-note{font-size:10px;margin:8px 4px 0}
+      body.home-mode{height:100dvh;min-height:100dvh;overflow:hidden}
+      body.home-mode .page{height:100dvh;min-height:0;padding:12px 14px 10px;display:flex;flex-direction:column;overflow:hidden}
+      body.home-mode .brand{flex:0 0 auto;margin-bottom:10px}
+      body.home-mode .brand h1{font-size:46px;line-height:.94}
+      body.home-mode .brand p{margin-top:5px;font-size:12px}
+      body.home-mode .card{flex:1 1 auto;min-height:0;padding:14px;border-radius:20px;overflow:hidden}
+      body.home-mode .profile-home.show{height:100%;display:flex;flex-direction:column;min-height:0}
+      body.home-mode .welcome{flex:0 0 auto;grid-template-columns:84px 1fr;gap:12px}
+      body.home-mode .welcome-avatar{width:84px;height:102px;border-radius:16px}
+      body.home-mode .hello{font-size:10px;letter-spacing:.1em;margin-bottom:3px}
+      body.home-mode .welcome h2{font-size:28px;margin-bottom:4px}
+      body.home-mode .profile-sub{font-size:12px}
+      body.home-mode .profile-data{flex:0 0 auto;gap:7px;margin-top:10px}
+      body.home-mode .data-box{padding:8px 5px;border-radius:12px;text-align:center}
+      body.home-mode .data-box strong{font-size:16px;line-height:1.05}
+      body.home-mode .data-box span{font-size:8px;margin-top:2px}
+      body.home-mode .calendar-block{flex:1 1 auto;min-height:0;margin-top:10px;padding-top:9px;display:flex;flex-direction:column}
+      body.home-mode .calendar-head{flex:0 0 auto;margin-bottom:5px;gap:5px}
+      body.home-mode .calendar-title{font-size:15px;white-space:nowrap}
+      body.home-mode .calendar-nav{gap:4px}
+      body.home-mode .calendar-month{min-width:112px;font-size:11px}
+      body.home-mode .month-btn{width:30px;height:30px;border-radius:9px;font-size:16px}
+      body.home-mode .weekdays{flex:0 0 auto;gap:2px;margin-bottom:2px}
+      body.home-mode .weekday{font-size:8.5px}
+      body.home-mode .calendar-grid{flex:1 1 auto;min-height:0;gap:1px}
+      body.home-mode .calendar-day{min-height:0;border-radius:9px;gap:1px}
+      body.home-mode .day-number{font-size:10px;line-height:1}
+      body.home-mode .workout-badge{width:23px;height:23px;font-size:8.5px;box-shadow:none}
+      body.home-mode .calendar-legend{flex:0 0 auto;margin:4px 0 0;font-size:8.5px;line-height:1.15}
+      body.home-mode .home-actions{flex:0 0 auto;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:7px;margin-top:7px}
+      body.home-mode .primary,body.home-mode .secondary{height:44px;border-radius:12px;padding:0 8px;font-size:12.5px}
+      body.home-mode .saved-note{flex:0 0 auto;font-size:8.5px;margin:4px 2px 0;line-height:1.1}
+
+      body:not(.home-mode){min-height:100dvh;overflow-x:hidden}
+      body:not(.home-mode) .page{padding:18px 14px 28px}
+      body:not(.home-mode) .brand{margin-bottom:14px}
+      body:not(.home-mode) .brand h1{font-size:46px}
+      body:not(.home-mode) .brand p{margin-top:6px;font-size:13px}
+      body:not(.home-mode) .card{padding:16px;border-radius:20px}
       .grid{grid-template-columns:1fr;gap:13px}.full{grid-column:auto}.avatars{grid-template-columns:repeat(2,1fr);gap:10px}
       .history-backdrop{padding:8px}
       .history-sheet{max-height:91dvh;border-radius:20px;padding:14px}
       .history-sheet-head h3{font-size:20px}
       .history-row{grid-template-columns:minmax(0,1fr) 96px 58px;padding:6px 7px;font-size:9px}
-    }
-
-    @media(max-width:640px) and (max-height:720px){
-      .page{padding:8px 12px}
-      .brand{margin-bottom:7px}
-      .brand h1{font-size:34px}
-      .brand p{font-size:11px;margin-top:4px}
-      .card{padding:10px}
-      .welcome{grid-template-columns:62px 1fr;gap:9px}
-      .welcome-avatar{width:62px;height:76px}
-      .hello{font-size:9px}
-      .welcome h2{font-size:22px}
-      .profile-sub{font-size:11px}
-      .profile-data{margin-top:7px;gap:5px}
-      .data-box{padding:5px 4px}
-      .data-box strong{font-size:14px}
-      .data-box span{font-size:8px}
-      .calendar-block{margin-top:7px;padding-top:6px}
-      .calendar-head{margin-bottom:3px}
-      .calendar-title{font-size:13px}
-      .calendar-month{min-width:105px;font-size:10px}
-      .month-btn{width:27px;height:27px}
-      .calendar-day{min-height:30px}
-      .day-number{font-size:9px}
-      .workout-badge{width:21px;height:21px;font-size:8px}
-      .calendar-legend{display:none}
-      .home-actions{margin-top:7px}
-      .primary,.secondary{height:38px;font-size:11px}
-      .saved-note{display:none}
     }
   </style>
 </head>
@@ -384,9 +363,11 @@
       const month=calendarCursor.getMonth();
       const firstWeekday=new Date(year,month,1).getDay();
       const daysInMonth=new Date(year,month+1,0).getDate();
+      const rows=Math.ceil((firstWeekday+daysInMonth)/7);
       const history=getWorkoutHistory();
       monthLabel.textContent=new Date(year,month,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
       grid.innerHTML='';
+      grid.style.gridTemplateRows=`repeat(${rows},minmax(0,1fr))`;
       for(let i=0;i<firstWeekday;i++){
         const empty=document.createElement('div');
         empty.className='calendar-day empty';
@@ -456,6 +437,7 @@
     function showHome(profile){
       currentProfile=profile;
       editingExisting=false;
+      document.body.classList.add('home-mode');
       formView.classList.add('hidden');
       profileHome.classList.add('show');
       document.getElementById('homeAvatar').src=profile.avatarBase||avatarFile(profile.sex,profile.avatar);
@@ -470,6 +452,7 @@
     function showFormForNewProfile(){
       currentProfile=null;
       editingExisting=false;
+      document.body.classList.remove('home-mode');
       profileHome.classList.remove('show');
       formView.classList.remove('hidden');
       formTitle.textContent='Monte seu perfil';
@@ -488,6 +471,7 @@
     function showEdit(profile){
       currentProfile=profile;
       editingExisting=true;
+      document.body.classList.remove('home-mode');
       profileHome.classList.remove('show');
       formView.classList.remove('hidden');
       formTitle.textContent='Editar perfil';
