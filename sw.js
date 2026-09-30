@@ -1,4 +1,4 @@
-const CACHE='moveup-v15';
+const CACHE='moveup-v16';
 const CORE=['./','./index.html','./manifest.webmanifest'];
 
 self.addEventListener('install',e=>e.waitUntil(
